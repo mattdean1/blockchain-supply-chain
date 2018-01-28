@@ -1,0 +1,22 @@
+{
+  "name": "gitlab",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://git-teaching.cs.bham.ac.uk/mod-ug-proj-2017/mxd434.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "composer-cli": "^0.16.3",
+    "composer-playground": "^0.16.3",
+    "composer-rest-server": "^0.16.3",
+    "generator-hyperledger-composer": "^0.16.3",
+    "yo": "^2.0.1"
+  }
+}
