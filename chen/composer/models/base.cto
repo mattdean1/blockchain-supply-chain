@@ -1,0 +1,120 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * Supply Chain Network
+ */
+namespace org.hcsc.network
+
+concept Trace {
+    o DateTime timestamp
+    o Address location
+    --> Trader company
+}
+
+asset Commodity identified by tradingSymbol {
+    o String tradingSymbol
+    o String name
+    o String description
+    o Double quantity
+    o Double unitPrice optional
+    o Double totalPrice optional
+    o Trace[] trace
+    --> PO purchaseOrder optional
+    --> Trader owner optional
+    --> Trader issuer optional
+}
+
+/**
+ * Status of an order
+ */
+enum OrderStatus {
+    o INITIATED
+    o CONFIRMED
+    o DELIVERING
+    o DELIVERED
+}
+
+/**
+ * A concept for a simple street address
+ */
+concept Address {
+    o Double longtitude range=[-180.0, 180.0] optional
+    o Double latitude range=[-90.0, 90.0] optional
+    o String city optional
+    o String country optional
+    o String locality optional
+    o String region optional
+    o String street optional
+    o String postalCode optional
+    o String postOfficeBoxNumber optional
+}
+
+asset PO identified by orderId { 
+    o String orderId 
+    o Commodity[] itemList
+    o Double orderTotalPrice optional
+    o OrderStatus orderStatus optional
+    --> Trader orderer
+    --> Trader vender
+}
+
+abstract participant Trader {
+    o String companyName
+    o Address address
+}
+
+participant Supplier identified by tradeId extends Trader {
+    o String tradeId
+}
+
+participant Manufacturer identified by tradeId extends Trader {
+    o String tradeId
+}
+
+participant Distributor identified by tradeId extends Trader {
+    o String tradeId
+}
+
+participant Retailer identified by tradeId extends Trader {
+    o String tradeId
+}
+
+participant Customer identified by tradeId extends Trader {
+    o String tradeId
+}
+
+transaction InitiatePO {
+    o String orderId 
+    o Commodity[] itemList
+    o Double orderTotalPrice optional
+    --> Trader orderer optional
+    --> Trader vender
+} 
+
+transaction TransferCommodity {
+    --> Commodity commodity
+    --> Trader issuer
+    --> Trader newOwner
+    --> PO purchaseOrder optional
+    o Address shipperLocation
+}
+
+transaction SetupDemo {
+		o Supplier[] suppliers
+		o Manufacturer[] manufacturers
+		o Distributor[] distributors
+		o Retailer[] retailers
+		o Customer[] customers
+}
