@@ -1,0 +1,17 @@
+namespace biswas.base
+
+abstract participant Actor identified by companyName {
+  o String companyName
+  o String email
+}
+abstract asset Batch identified by batchId {
+  o String batchId
+  o Integer quantity 
+  o String units
+}
+transaction BatchTransaction {
+  --> Batch batch
+  o Integer quantity
+  --> Actor seller
+  --> Actor buyer
+}

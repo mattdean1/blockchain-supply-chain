@@ -1,0 +1,32 @@
+namespace biswas.producer
+
+import biswas.base.Batch
+import biswas.base.Actor
+import biswas.grower.Grapes
+
+
+enum ProductionProcessType {
+  o DECANTATION
+  o FERMENTATION
+  o CONSERVATION
+}
+
+asset BulkWine extends Batch {
+  o String[] additives optional
+  o ProductionProcess[] processes optional
+  --> Grapes grapes
+  --> WineProducer producer
+}
+
+abstract transaction WineProductionTransaction {
+  --> BulkWine batch
+}
+
+transaction AddAdditives extends WineProductionTransaction {
+  o String[] additives
+}
+transaction ProductionProcess extends WineProductionTransaction {
+  o ProductionProcessType process
+}
+participant WineProducer extends Actor {
+}
