@@ -1,0 +1,19 @@
+/**
+ * Write your model definitions here
+ */
+
+namespace org1.example.com
+
+participant User identified by email {
+  o String email
+}
+
+asset SampleAsset identified by assetId {
+  o String assetId
+  o String value
+}
+
+transaction ChangeAssetValue {
+  o String newValue
+  --> Asset relatedAsset
+}
