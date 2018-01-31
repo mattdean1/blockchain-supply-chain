@@ -2,22 +2,31 @@ namespace biswas.grower
 
 import biswas.base.Batch
 import biswas.base.Actor
+import biswas.producer.WineProducer
 
-concept Location {
-  o Double latitude
-  o Double longitude
+participant GrapeGrower extends Actor {
+  o Vineyard[] vineyards
 }
-asset Vineyard identified by vineyardId {
-  o String vineyardId
-  o Location location
-  o Integer altitude  // metres above sea level
-}
+
 asset Grapes extends Batch {
   o String species                // type/name of vine
   o DateTime pruningDate
   --> Vineyard vineyard
   --> GrapeGrower grapeGrower
 }
-participant GrapeGrower extends Actor {
-  o Vineyard[] vineyards
+
+transaction SellGrapes {
+  o Integer quantity
+  --> Grapes grapes
+  --> WineProducer buyer
+} 
+
+asset Vineyard identified by vineyardId {
+  o String vineyardId
+  o Location location
+  o Integer altitude  // metres above sea level
+}
+concept Location {
+  o Double latitude
+  o Double longitude
 }
