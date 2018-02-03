@@ -13,9 +13,9 @@ asset BulkWine extends Batch {
   --> WineProducer producer
 }
 
-transaction ProduceWine {
+transaction CreateWine {
   // consume Grapes to create BulkWine
-  --> Grapes batch
+  --> Grapes grapes
 }
 
 abstract transaction ProductionStep {

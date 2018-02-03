@@ -7,37 +7,5 @@ abstract participant Actor identified by companyName {
 abstract asset Batch identified by batchId {
   o String batchId
   o Integer quantity 
-  o String units
   --> Actor owner
 }
-
-// /* Transform one batch into another */
-// transaction TransformBatch {
-//   // consume a batch in the creation of a second
-//   --> Batch batch
-// }
-// transaction TransformPartialBatch extends TransformBatch {
-//   // consume part of a batch in the creation of a second
-//   o Integer quantity
-// }
-
-// /* Transfer batches between Actors */
-// transaction TransferBatch extends TransformBatch {
-//   // transfer a batch to a new owner
-//   --> Actor newOwner
-// }
-// transaction TransferPartialBatch extends TransferBatch {
-//   // transfer part of a batch to a new owner
-//   o Integer quantity
-// }
-
-// /* Combine batches */
-// transaction AggregateBatches {
-//   // add batch 1 to batch 2
-//   --> Batch batch1
-//   --> Batch batch2
-// }
-// transaction AggregatePartialBatch extends AggregateBatches {
-//   //  add part of batch 1 to batch 2
-//   o Integer quantity
-// }

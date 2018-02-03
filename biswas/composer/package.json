@@ -18,5 +18,8 @@
     "istanbul": "latest",
     "mkdirp": "latest",
     "mocha": "latest"
+  },
+  "dependencies": {
+    "uuid": "^3.2.1"
   }
 }
