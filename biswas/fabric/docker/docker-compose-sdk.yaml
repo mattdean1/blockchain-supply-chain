@@ -1,0 +1,55 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '2'
+
+networks:
+  network:
+
+services:
+  orderer.biswas.com:
+    extends:
+      file:   base.yaml
+      service: orderer
+    networks:
+      - network
+
+  ca.grower.biswas.com:
+    extends:
+      file:  grower.yaml
+      service: ca
+    networks:
+      - network
+  peer0.grower.biswas.com:
+    extends:
+      file:  grower.yaml
+      service: peer0
+    networks:
+      - network
+  peer1.grower.biswas.com:
+    extends:
+      file:  grower.yaml
+      service: peer1
+    networks:
+      - network
+
+  ca.producer.biswas.com:
+    extends:
+      file:  producer.yaml
+      service: ca
+    networks:
+      - network
+  peer0.producer.biswas.com:
+    extends:
+      file:  producer.yaml
+      service: peer0
+    networks:
+      - network
+  peer1.producer.biswas.com:
+    extends:
+      file:  producer.yaml
+      service: peer1
+    networks:
+      - network

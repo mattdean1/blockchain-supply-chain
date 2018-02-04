@@ -1,19 +1,6 @@
 version: '2'
 
 services:
-  ca:
-    container_name: ca.grower.biswas.com
-    extends:
-      file: base.yaml
-      service: ca-base
-    environment:
-      - FABRIC_CA_SERVER_CA_NAME=ca-grower
-    ports:
-      - "7054:7054"
-    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/ca.grower.biswas.com-cert.pem --ca.keyfile /etc/hyperledger/12917a55dc7629941c547f3adb7e1e80abbf9a1fbccd09b8f53d1db52c421d33_sk -b admin:adminpw -d'
-    volumes:
-      - ../artifacts/certs/peerOrganizations/grower.biswas.com/ca:/etc/hyperledger
-
   peer0:
     container_name: peer0.grower.biswas.com
     extends:
@@ -48,3 +35,16 @@ services:
     ports:
       - 8051:7051
       - 8053:7053
+
+  ca:
+    container_name: ca.grower.biswas.com
+    extends:
+      file: base.yaml
+      service: ca-base
+    environment:
+      - FABRIC_CA_SERVER_CA_NAME=ca-grower
+    ports:
+      - "7054:7054"
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/ca.grower.biswas.com-cert.pem --ca.keyfile /etc/hyperledger/12917a55dc7629941c547f3adb7e1e80abbf9a1fbccd09b8f53d1db52c421d33_sk -b admin:adminpw -d'
+    volumes:
+      - ../artifacts/certs/peerOrganizations/grower.biswas.com/ca:/etc/hyperledger
