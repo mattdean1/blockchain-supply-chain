@@ -1,0 +1,51 @@
+version: '2'
+
+services:
+  ca:
+    container_name: ca.producer.biswas.com
+    extends:
+      file: base.yaml
+      service: ca-base
+    environment:
+      - FABRIC_CA_SERVER_CA_NAME=ca-producer
+    ports:
+      - "8054:7054"
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/ca.producer.biswas.com-cert.pem --ca.keyfile /etc/hyperledger/f3ac32193791a0699276d96723e61d0938be2b2528f19fb985036a206ba1656c_sk -b admin:adminpw -d'
+    volumes:
+      - ../artifacts/certs/peerOrganizations/producer.biswas.com/ca:/etc/hyperledger
+
+  peer0:
+    container_name: peer0.producer.biswas.com
+    extends:
+      file: base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.producer.biswas.com
+      - CORE_PEER_ADDRESS=peer0.producer.biswas.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.producer.biswas.com:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.producer.biswas.com:7051
+      - CORE_PEER_LOCALMSPID=ProducerMSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../artifacts/certs/peerOrganizations/producer.biswas.com/peers/peer0.producer.biswas.com/msp:/etc/hyperledger/fabric/msp
+    ports:
+      - 9051:7051
+      - 9053:7053
+
+  peer1:
+    container_name: peer1.producer.biswas.com
+    extends:
+      file: base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer1.producer.biswas.com
+      - CORE_PEER_ADDRESS=peer1.producer.biswas.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.producer.biswas.com:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.producer.biswas.com:7051
+      - CORE_PEER_LOCALMSPID=ProducerMSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../artifacts/certs/peerOrganizations/producer.biswas.com/peers/peer1.producer.biswas.com/msp:/etc/hyperledger/fabric/msp
+    ports:
+      - 10051:7051
+      - 10053:7053

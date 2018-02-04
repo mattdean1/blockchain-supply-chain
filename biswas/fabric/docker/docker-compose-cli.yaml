@@ -10,46 +10,41 @@ networks:
 
 services:
 
+  # Set up our actual network
   orderer.biswas.com:
     extends:
-      file:   docker-compose-base.yaml
-      service: orderer.biswas.com
-    container_name: orderer.biswas.com
+      file:   base.yaml
+      service: orderer
     networks:
       - network
 
   peer0.grower.biswas.com:
-    container_name: peer0.grower.biswas.com
     extends:
-      file:  docker-compose-base.yaml
-      service: peer0.grower.biswas.com
+      file:  grower.yaml
+      service: peer0
     networks:
       - network
-
   peer1.grower.biswas.com:
-    container_name: peer1.grower.biswas.com
     extends:
-      file:  docker-compose-base.yaml
-      service: peer1.grower.biswas.com
+      file:  grower.yaml
+      service: peer1
     networks:
       - network
-
+      
   peer0.producer.biswas.com:
-    container_name: peer0.producer.biswas.com
     extends:
-      file:  docker-compose-base.yaml
-      service: peer0.producer.biswas.com
+      file:  producer.yaml
+      service: peer0
     networks:
       - network
-
   peer1.producer.biswas.com:
-    container_name: peer1.producer.biswas.com
     extends:
-      file:  docker-compose-base.yaml
-      service: peer1.producer.biswas.com
+      file:  producer.yaml
+      service: peer1
     networks:
       - network
 
+  # Add an extra container for interacting with it
   cli:
     container_name: cli
     image: hyperledger/fabric-tools
@@ -59,11 +54,12 @@ services:
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
       - CORE_LOGGING_LEVEL=DEBUG
       - CORE_PEER_ID=cli
+      # the following 3 env vars determine the peer used when running
+      # e.g. `peer channel create` from inside the container
       - CORE_PEER_ADDRESS=peer0.grower.biswas.com:7051
       - CORE_PEER_LOCALMSPID=GrowerMSP
       - CORE_PEER_MSPCONFIGPATH=/opt/gopath/artifacts/certs/peerOrganizations/grower.biswas.com/users/Admin@grower.biswas.com/msp
     working_dir: /opt/gopath
-    # command: /bin/bash -c './scripts/script.sh ${CHANNEL_NAME} ${DELAY} ${LANG}; sleep $TIMEOUT'
     volumes:
         - /var/run/:/host/var/run/
         - ../artifacts:/opt/gopath/artifacts/
