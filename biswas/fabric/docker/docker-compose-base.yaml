@@ -13,20 +13,14 @@ services:
       - ORDERER_GENERAL_LOGLEVEL=debug
       - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
       - ORDERER_GENERAL_GENESISMETHOD=file
-      - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block
+      - ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/orderer.genesis.block
       - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
-      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
-      # enabled TLS
-      - ORDERER_GENERAL_TLS_ENABLED=true
-      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
-      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
-      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
-    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+      - ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/msp
+    working_dir: /opt/gopath
     command: orderer
     volumes:
-    - ../artifacts/channel/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
-    - ../artifacts/certs/ordererOrganizations/biswas.com/orderers/orderer.biswas.com/msp:/var/hyperledger/orderer/msp
-    - ../artifacts/certs/ordererOrganizations/biswas.com/orderers/orderer.biswas.com/tls/:/var/hyperledger/orderer/tls
+    - ../artifacts/channel/genesis.block:/etc/hyperledger/orderer.genesis.block
+    - ../artifacts/certs/ordererOrganizations/biswas.com/orderers/orderer.biswas.com/msp:/etc/hyperledger/msp
     ports:
       - 7050:7050
 
@@ -43,7 +37,6 @@ services:
     volumes:
         - /var/run/:/host/var/run/
         - ../artifacts/certs/peerOrganizations/grower.biswas.com/peers/peer0.grower.biswas.com/msp:/etc/hyperledger/fabric/msp
-        - ../artifacts/certs/peerOrganizations/grower.biswas.com/peers/peer0.grower.biswas.com/tls:/etc/hyperledger/fabric/tls
     ports:
       - 7051:7051
       - 7053:7053
@@ -62,7 +55,6 @@ services:
     volumes:
         - /var/run/:/host/var/run/
         - ../artifacts/certs/peerOrganizations/grower.biswas.com/peers/peer1.grower.biswas.com/msp:/etc/hyperledger/fabric/msp
-        - ../artifacts/certs/peerOrganizations/grower.biswas.com/peers/peer1.grower.biswas.com/tls:/etc/hyperledger/fabric/tls
     ports:
       - 8051:7051
       - 8053:7053
@@ -81,7 +73,6 @@ services:
     volumes:
         - /var/run/:/host/var/run/
         - ../artifacts/certs/peerOrganizations/producer.biswas.com/peers/peer0.producer.biswas.com/msp:/etc/hyperledger/fabric/msp
-        - ../artifacts/certs/peerOrganizations/producer.biswas.com/peers/peer0.producer.biswas.com/tls:/etc/hyperledger/fabric/tls
     ports:
       - 9051:7051
       - 9053:7053
@@ -100,7 +91,6 @@ services:
     volumes:
         - /var/run/:/host/var/run/
         - ../artifacts/certs/peerOrganizations/producer.biswas.com/peers/peer1.producer.biswas.com/msp:/etc/hyperledger/fabric/msp
-        - ../artifacts/certs/peerOrganizations/producer.biswas.com/peers/peer1.producer.biswas.com/tls:/etc/hyperledger/fabric/tls
     ports:
       - 10051:7051
       - 10053:7053
