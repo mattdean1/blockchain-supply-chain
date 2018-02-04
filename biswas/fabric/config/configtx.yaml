@@ -1,0 +1,64 @@
+---
+Profiles:
+    GenesisBlockGeneration:
+        Orderer:
+            <<: *OrdererDefaults
+            Organizations:
+                - *OrdererOrg
+        Consortiums:
+            SampleConsortium:
+                Organizations:
+                    - *Grower
+                    - *Producer
+
+    ChannelCreation:
+        Consortium: SampleConsortium
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *Grower
+                - *Producer
+
+
+Organizations:
+    - &OrdererOrg
+        Name: OrdererOrg
+        ID: OrdererMSP
+        MSPDir: ../artifacts/certs/ordererOrganizations/biswas.com/msp
+
+    - &Grower
+        Name: GrowerMSP
+        ID: GrowerMSP
+        MSPDir: ../artifacts/certs/peerOrganizations/grower.biswas.com/msp
+        AnchorPeers:
+            - Host: peer0.grower.biswas.com
+              Port: 7051
+
+    - &Producer
+        Name: ProducerMSP
+        ID: ProducerMSP
+        MSPDir: ../artifacts/certs/peerOrganizations/producer.biswas.com/msp
+        AnchorPeers:
+            - Host: peer0.producer.biswas.com
+              Port: 7051
+
+
+Orderer: &OrdererDefaults
+    # Available types are "solo" and "kafka"
+    OrdererType: solo
+    Addresses:
+        - orderer.biswas.com:7050
+    BatchTimeout: 2s
+    BatchSize:
+        MaxMessageCount: 10
+        AbsoluteMaxBytes: 99 MB
+        PreferredMaxBytes: 512 KB
+    Kafka:
+        # NOTE: Use IP:port notation
+        Brokers:
+            - 127.0.0.1:9092
+    Organizations:
+
+
+Application: &ApplicationDefaults
+    Organizations:
