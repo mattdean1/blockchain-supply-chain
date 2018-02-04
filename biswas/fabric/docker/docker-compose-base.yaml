@@ -1,0 +1,106 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '2'
+
+services:
+  orderer.biswas.com:
+    container_name: orderer.biswas.com
+    image: hyperledger/fabric-orderer
+    environment:
+      - ORDERER_GENERAL_LOGLEVEL=debug
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block
+      - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+      # enabled TLS
+      - ORDERER_GENERAL_TLS_ENABLED=true
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: orderer
+    volumes:
+    - ../artifacts/channel/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+    - ../artifacts/certs/ordererOrganizations/biswas.com/orderers/orderer.biswas.com/msp:/var/hyperledger/orderer/msp
+    - ../artifacts/certs/ordererOrganizations/biswas.com/orderers/orderer.biswas.com/tls/:/var/hyperledger/orderer/tls
+    ports:
+      - 7050:7050
+
+  peer0.grower.biswas.com:
+    container_name: peer0.grower.biswas.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.grower.biswas.com
+      - CORE_PEER_ADDRESS=peer0.grower.biswas.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.grower.biswas.com:7051
+      - CORE_PEER_LOCALMSPID=GrowerMSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../artifacts/certs/peerOrganizations/grower.biswas.com/peers/peer0.grower.biswas.com/msp:/etc/hyperledger/fabric/msp
+        - ../artifacts/certs/peerOrganizations/grower.biswas.com/peers/peer0.grower.biswas.com/tls:/etc/hyperledger/fabric/tls
+    ports:
+      - 7051:7051
+      - 7053:7053
+
+  peer1.grower.biswas.com:
+    container_name: peer1.grower.biswas.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer1.grower.biswas.com
+      - CORE_PEER_ADDRESS=peer1.grower.biswas.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.grower.biswas.com:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.grower.biswas.com:7051
+      - CORE_PEER_LOCALMSPID=GrowerMSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../artifacts/certs/peerOrganizations/grower.biswas.com/peers/peer1.grower.biswas.com/msp:/etc/hyperledger/fabric/msp
+        - ../artifacts/certs/peerOrganizations/grower.biswas.com/peers/peer1.grower.biswas.com/tls:/etc/hyperledger/fabric/tls
+    ports:
+      - 8051:7051
+      - 8053:7053
+
+  peer0.producer.biswas.com:
+    container_name: peer0.producer.biswas.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.producer.biswas.com
+      - CORE_PEER_ADDRESS=peer0.producer.biswas.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.producer.biswas.com:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.producer.biswas.com:7051
+      - CORE_PEER_LOCALMSPID=ProducerMSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../artifacts/certs/peerOrganizations/producer.biswas.com/peers/peer0.producer.biswas.com/msp:/etc/hyperledger/fabric/msp
+        - ../artifacts/certs/peerOrganizations/producer.biswas.com/peers/peer0.producer.biswas.com/tls:/etc/hyperledger/fabric/tls
+    ports:
+      - 9051:7051
+      - 9053:7053
+
+  peer1.producer.biswas.com:
+    container_name: peer1.producer.biswas.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer1.producer.biswas.com
+      - CORE_PEER_ADDRESS=peer1.producer.biswas.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.producer.biswas.com:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.producer.biswas.com:7051
+      - CORE_PEER_LOCALMSPID=ProducerMSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../artifacts/certs/peerOrganizations/producer.biswas.com/peers/peer1.producer.biswas.com/msp:/etc/hyperledger/fabric/msp
+        - ../artifacts/certs/peerOrganizations/producer.biswas.com/peers/peer1.producer.biswas.com/tls:/etc/hyperledger/fabric/tls
+    ports:
+      - 10051:7051
+      - 10053:7053
