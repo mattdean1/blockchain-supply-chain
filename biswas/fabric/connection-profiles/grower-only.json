@@ -1,0 +1,26 @@
+{
+  "name": "biswas-grower-only",
+  "type": "hlfv1",
+  "mspID": "GrowerMSP",
+  "peers": [
+    {
+      "requestURL": "grpc://localhost:7051",
+      "eventURL": "grpc://localhost:7053"
+    },
+    {
+      "requestURL": "grpc://localhost:8051",
+      "eventURL": "grpc://localhost:8053"
+    }
+  ],
+  "ca": {
+    "url": "http://localhost:7054",
+    "name": "ca-grower"
+  },
+  "orderers": [
+    {
+      "url": "grpc://localhost:7050"
+    }
+  ],
+  "channel": "channel1",
+  "timeout": 300
+}

@@ -6,7 +6,7 @@
 version: '2'
 
 networks:
-  network:
+  biswas:
 
 services:
   orderer.biswas.com:
@@ -14,42 +14,70 @@ services:
       file:   base.yaml
       service: orderer
     networks:
-      - network
+      - biswas
 
   ca.grower.biswas.com:
     extends:
       file:  grower.yaml
       service: ca
     networks:
-      - network
+      - biswas
   peer0.grower.biswas.com:
     extends:
       file:  grower.yaml
       service: peer0
     networks:
-      - network
+      - biswas
   peer1.grower.biswas.com:
     extends:
       file:  grower.yaml
       service: peer1
     networks:
-      - network
+      - biswas
 
   ca.producer.biswas.com:
     extends:
       file:  producer.yaml
       service: ca
     networks:
-      - network
+      - biswas
   peer0.producer.biswas.com:
     extends:
       file:  producer.yaml
       service: peer0
     networks:
-      - network
+      - biswas
   peer1.producer.biswas.com:
     extends:
       file:  producer.yaml
       service: peer1
     networks:
-      - network
+      - biswas
+
+  cli:
+    container_name: cli
+    image: hyperledger/fabric-tools
+    tty: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_LOGGING_LEVEL=DEBUG
+      - CORE_PEER_ID=cli
+      - CORE_PEER_ADDRESS=
+      - CORE_PEER_LOCALMSPID=
+      - CORE_PEER_MSPCONFIGPATH=
+    working_dir: /opt/gopath
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../artifacts:/opt/gopath/artifacts/
+        - ../createChannel.sh:/opt/gopath/createChannel.sh
+    depends_on:
+      - orderer.biswas.com
+      - ca.grower.biswas.com
+      - peer0.grower.biswas.com
+      - peer1.grower.biswas.com
+      - ca.producer.biswas.com
+      - peer0.producer.biswas.com
+      - peer1.producer.biswas.com
+    networks:
+      - biswas

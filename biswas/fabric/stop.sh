@@ -1,1 +1,1 @@
-docker-compose -f docker/docker-compose-cli.yaml down
+docker-compose -f docker/docker-compose-sdk.yaml down

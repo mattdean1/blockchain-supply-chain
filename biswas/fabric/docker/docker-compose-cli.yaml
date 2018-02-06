@@ -6,7 +6,7 @@
 version: '2'
 
 networks:
-  network:
+  biswas:
 
 services:
 
@@ -16,33 +16,33 @@ services:
       file:   base.yaml
       service: orderer
     networks:
-      - network
+      - biswas
 
   peer0.grower.biswas.com:
     extends:
       file:  grower.yaml
       service: peer0
     networks:
-      - network
+      - biswas
   peer1.grower.biswas.com:
     extends:
       file:  grower.yaml
       service: peer1
     networks:
-      - network
+      - biswas
 
   peer0.producer.biswas.com:
     extends:
       file:  producer.yaml
       service: peer0
     networks:
-      - network
+      - biswas
   peer1.producer.biswas.com:
     extends:
       file:  producer.yaml
       service: peer1
     networks:
-      - network
+      - biswas
 
   # Add an extra container for interacting with it
   cli:
@@ -69,4 +69,4 @@ services:
       - peer0.producer.biswas.com
       - peer1.producer.biswas.com
     networks:
-      - network
+      - biswas
