@@ -6,6 +6,6 @@ abstract participant Actor identified by companyName {
 }
 abstract asset Batch identified by batchId {
   o String batchId
-  o Integer quantity 
+  o Integer quantity
   --> Actor owner
 }

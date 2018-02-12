@@ -22,12 +22,14 @@ services:
       service: ca
     networks:
       - biswas
+
   peer0.grower.biswas.com:
     extends:
       file:  grower.yaml
       service: peer0
     networks:
       - biswas
+
   peer1.grower.biswas.com:
     extends:
       file:  grower.yaml
@@ -35,24 +37,28 @@ services:
     networks:
       - biswas
 
+
   ca.producer.biswas.com:
     extends:
       file:  producer.yaml
       service: ca
     networks:
       - biswas
+
   peer0.producer.biswas.com:
     extends:
       file:  producer.yaml
       service: peer0
     networks:
       - biswas
+
   peer1.producer.biswas.com:
     extends:
       file:  producer.yaml
       service: peer1
     networks:
       - biswas
+
 
   cli:
     container_name: cli

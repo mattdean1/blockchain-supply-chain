@@ -8,7 +8,6 @@ participant WineProducer extends Actor {
 
 asset BulkWine extends Batch {
   o String[] additives optional
-  o ProductionProcess[] processes optional
   --> Grapes grapes
   --> WineProducer producer
 }
@@ -16,19 +15,4 @@ asset BulkWine extends Batch {
 transaction CreateWine {
   // consume Grapes to create BulkWine
   --> Grapes grapes
-}
-
-abstract transaction ProductionStep {
-  --> BulkWine batch
-}
-transaction AddAdditives extends ProductionStep {
-  o String[] additives
-}
-transaction ProductionProcess extends ProductionStep {
-  o ProductionProcessType process
-}
-enum ProductionProcessType {
-  o DECANTATION
-  o FERMENTATION
-  o CONSERVATION
 }

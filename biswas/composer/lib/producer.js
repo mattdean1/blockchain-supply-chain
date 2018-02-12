@@ -1,12 +1,4 @@
 'use strict';
-var uuid = require('uuid/v4');
-
-/**
- * Convert the units of grapes to wine
- */
-function grapesToWine(grapesQuantity) {
-    return grapesQuantity / 2;
-}
 
 /**
  * Transfers some quantity of a resource (e.g. grapes, wine bottles)
@@ -30,28 +22,41 @@ function createWine(create) {
     return getAssetRegistry(producerNamespace + '.BulkWine')
         .then(function(bwReg) {
             // Create the BulkWine
-            var id = 'BULKWINE_' + uuid();
-            var bulkWine = getFactory().newResource(
+            var id = 'BULKWINE_' + 'asdf'; //uuid();
+            var bulkWine = factory.newResource(
                 producerNamespace,
                 'BulkWine',
                 id
             );
-            Object.assign(bulkWine, {
-                grapes: grapes,
-                producer: producer,
-                owner: producer,
-                quantity: grapesToWine(grapes.quantity)
-            });
+            bulkWine.grapes = factory.newRelationship(
+                growerNamespace,
+                'Grapes',
+                grapes
+            );
+            bulkWine.producer = factory.newRelationship(
+                producerNamespace,
+                'WineProducer',
+                producer
+            );
+            bulkWine.owner = factory.newRelationship(
+                producerNamespace,
+                'WineProducer',
+                producer
+            );
+            bulkWine.quantity = grapes.quantity / 2;
 
             return bwReg.add(bulkWine);
         })
         .then(function() {
             return getAssetRegistry(growerNamespace + 'Grapes');
         })
-
         .then(function(grapesRegistry) {
             // Consume the grapes - assume the entire batch is used
             grapes.quantity = 0;
-            grapesRegistry.update(grapes);
+            return grapesRegistry.update(grapes);
+        })
+        .catch(function(err) {
+            console.log('err in tx func');
+            console.log(err);
         });
 }

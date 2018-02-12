@@ -1,25 +1,26 @@
 {
-  "name": "composer",
-  "version": "0.0.1",
-  "description": "Implementation of the supply chain model proposed by Biswas",
-  "scripts": {
-    "test": "mocha --recursive"
-  },
-  "author": "Matt Dean",
-  "email": "mail@mattdean.io",
-  "license": "Apache-2.0",
-  "devDependencies": {
-    "composer-admin": "latest",
-    "composer-client": "latest",
-    "composer-common": "latest",
-    "composer-connector-embedded": "latest",
-    "chai": "latest",
-    "eslint": "latest",
-    "istanbul": "latest",
-    "mkdirp": "latest",
-    "mocha": "latest"
-  },
-  "dependencies": {
-    "uuid": "^3.2.1"
-  }
+    "name": "biswas",
+    "version": "0.0.2",
+    "description":
+        "Implementation of the supply chain model proposed by Biswas",
+    "scripts": {
+        "test": "mocha --recursive"
+    },
+    "author": "Matt Dean",
+    "email": "mail@mattdean.io",
+    "license": "Apache-2.0",
+    "devDependencies": {
+        "composer-admin": "latest",
+        "composer-client": "latest",
+        "composer-common": "latest",
+        "composer-connector-embedded": "latest",
+        "chai": "latest",
+        "eslint": "latest",
+        "istanbul": "latest",
+        "mkdirp": "latest",
+        "mocha": "latest"
+    },
+    "dependencies": {
+        "uuid": "^3.2.1"
+    }
 }

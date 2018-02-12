@@ -1,7 +1,5 @@
 'use strict';
 
-var uuid = require('uuid/v4');
-
 /**
  * Transfers some quantity of a resource (e.g. grapes, wine bottles)
  * from one actor to another
@@ -32,17 +30,20 @@ function sellGrapes(sale) {
         .then(function(grapesReg) {
             grapesRegistry = grapesReg;
             // create a new batch of grapes for the new owner
-            var id = 'GRAPES_' + uuid();
+            var id = 'GRAPES_' + 'asdf'; //uuid();
             var newGrapes = getFactory().newResource(
                 growerNamespace,
                 'Grapes',
                 id
             );
-            newGrapes = Object.assign(newGrapes, grapes, {
-                id: id,
-                quantity: quantityToBeSold,
-                owner: buyer
-            });
+            newGrapes.id = id;
+            newGrapes.quantity = quantityToBeSold;
+            newGrapes.owner = getFactory().newRelationship(
+                'biswas.producer',
+                'WineProducer',
+                buyer
+            );
+
             return grapesRegistry.add(newGrapes);
         })
         .then(function() {
@@ -50,5 +51,9 @@ function sellGrapes(sale) {
             var newQuantity = grapes.quantity - quantityToBeSold;
             grapes.quantity = newQuantity;
             return grapesRegistry.update(grapes);
+        })
+        .catch(function(err) {
+            console.log('err in tx func');
+            console.log(err);
         });
 }
