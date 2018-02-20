@@ -1,8 +1,7 @@
 {
     "name": "biswas",
     "version": "0.0.2",
-    "description":
-        "Implementation of the supply chain model proposed by Biswas",
+    "description": "Implementation of the supply chain model proposed by Biswas",
     "scripts": {
         "test": "mocha --recursive"
     },
@@ -19,8 +18,5 @@
         "istanbul": "latest",
         "mkdirp": "latest",
         "mocha": "latest"
-    },
-    "dependencies": {
-        "uuid": "^3.2.1"
     }
 }

@@ -78,6 +78,8 @@ configtxgen -profile ChannelCreation -outputAnchorPeersUpdate ./artifacts/channe
 ### Start/Stop
 
 ```Shell
+export COMPOSE_PROJECT_NAME=biswas
+
 docker-compose -f docker/docker-compose-cli.yaml up -d
 docker-compose -f docker/docker-compose-cli.yaml down
 ```
@@ -163,11 +165,20 @@ composer card import -f id-cards/producer-network-admin.card
 
 ```
 composer network start\
- -c PeerAdmin@biswas-grower\
+ -c PeerAdmin@biswas-grower-only\
  -a composer/biswas@0.0.2.bna\
  -A grower-network-admin\
  -C fabric/id-cards/grower-network-admin/admin-pub.pem\
  -A producer-network-admin\
  -C fabric/id-cards/producer-network-admin/admin-pub.pem
+```
+
+### Ping the network
+
+Expect the first interaction using a business card to fail, subsequent interactions will work fine.
+
+```
+composer network ping -c grower-network-admin@biswas
+composer network ping -c producer-network-admin@biswas
 ```
 
