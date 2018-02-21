@@ -1,5 +1,5 @@
 # Compile composer network from source
-composer archive create --sourceType dir --sourceName ./composer --archiveFile ./composer/biswas.bna
+./compileBusinessNetwork.sh
 
 # Start fabric and create channel
 export COMPOSE_PROJECT_NAME=biswas
