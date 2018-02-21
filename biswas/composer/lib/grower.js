@@ -11,6 +11,7 @@ function sellGrapes(sale) {
     var buyer = sale.buyer;
     var quantityToBeSold = sale.quantityToBeSold;
     var growerNamespace = 'biswas.grower';
+    var factory = getFactory();
 
     // verify that the grapes can be sold
     if (quantityToBeSold > grapes.quantity) {
@@ -31,17 +32,25 @@ function sellGrapes(sale) {
             grapesRegistry = grapesReg;
             // create a new batch of grapes for the new owner
             var id = 'GRAPES_' + 'asdf'; //uuid();
-            var newGrapes = getFactory().newResource(
-                growerNamespace,
-                'Grapes',
-                id
-            );
+            var newGrapes = factory.newResource(growerNamespace, 'Grapes', id);
             newGrapes.id = id;
             newGrapes.quantity = quantityToBeSold;
-            newGrapes.owner = getFactory().newRelationship(
+            newGrapes.species = grapes.species;
+            newGrapes.harvestDate = grapes.harvestDate;
+            newGrapes.owner = factory.newRelationship(
                 'biswas.producer',
                 'WineProducer',
                 buyer
+            );
+            newGrapes.grapeGrower = factory.newRelationship(
+                growerNamespace,
+                'GrapeGrower',
+                grapes.owner
+            );
+            newGrapes.vineyard = factory.newRelationship(
+                growerNamespace,
+                'Vineyard',
+                grapes.vineyard
             );
 
             return grapesRegistry.add(newGrapes);

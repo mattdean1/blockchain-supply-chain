@@ -44,6 +44,16 @@ function createWine(create) {
                 producer
             );
             bulkWine.quantity = grapes.quantity / 2;
+            bulkWine.year = grapes.harvestDate.split('-')[0]; // should/could parse date properly here
+
+            // emit an event
+            var event = factory.newEvent(producerNamespace, 'WineCreated');
+            event.bulkWine = factory.newRelationship(
+                producerNamespace,
+                'BulkWine',
+                bulkWine
+            );
+            emit(event);
 
             return bwReg.add(bulkWine);
         })

@@ -8,6 +8,7 @@ participant WineProducer extends Actor {
 
 asset BulkWine extends Batch {
   o String[] additives optional
+  o DateTime year
   --> Grapes grapes
   --> WineProducer producer
 }
@@ -15,4 +16,7 @@ asset BulkWine extends Batch {
 transaction CreateWine {
   // consume Grapes to create BulkWine
   --> Grapes grapes
+}
+event WineCreated {
+  --> BulkWine bulkWine
 }

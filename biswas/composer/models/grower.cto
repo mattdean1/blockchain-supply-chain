@@ -10,7 +10,7 @@ participant GrapeGrower extends Actor {
 
 asset Grapes extends Batch {
   o String species                // type/name of vine
-  o DateTime pruningDate
+  o DateTime harvestDate
   --> Vineyard vineyard
   --> GrapeGrower grapeGrower
 }
@@ -19,7 +19,7 @@ transaction SellGrapes {
   o Integer quantity
   --> Grapes grapes
   --> WineProducer buyer
-} 
+}
 
 asset Vineyard identified by vineyardId {
   o String vineyardId

@@ -1,0 +1,20 @@
+query northernVineyards{
+  description: "Select all vineyards in the northern hemisphere"
+  statement:
+      SELECT biswas.grower.Vineyard
+        WHERE (location.latitude > 0)
+}
+
+query largeWineBatches{
+  description: "Select batches of wine larger than the given parameter"
+  statement:
+    SELECT biswas.producer.BulkWine
+      WHERE (quantity > _$quantityParam)
+}
+
+query historianQuery{
+  description: "Find all the batches of wine created by a producer"
+  statement:
+      SELECT org.hyperledger.composer.system.HistorianRecord
+          WHERE ((transactionType == 'CreateWine') AND (participantInvoking == _$producerParam))
+}
