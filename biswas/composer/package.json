@@ -9,14 +9,12 @@
     "email": "mail@mattdean.io",
     "license": "Apache-2.0",
     "devDependencies": {
-        "composer-admin": "latest",
-        "composer-client": "latest",
-        "composer-common": "latest",
-        "composer-connector-embedded": "latest",
-        "chai": "latest",
-        "eslint": "latest",
-        "istanbul": "latest",
-        "mkdirp": "latest",
-        "mocha": "latest"
+        "chai": "^4.1.2",
+        "composer-admin": "next",
+        "composer-client": "next",
+        "composer-common": "next",
+        "composer-connector-embedded": "next",
+        "eslint": "^4.18.2",
+        "mocha": "^5.0.2"
     }
 }
