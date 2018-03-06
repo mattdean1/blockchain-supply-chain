@@ -1,11 +1,13 @@
 env:
     node: true
     mocha: true
+    es6: true
 extends: 'eslint:recommended'
 parserOptions:
+    ecmaVersion: 2017
     sourceType:
         - script
-globals: 
+globals:
     getFactory: true
     getSerializer: true
     getAssetRegistry: true
@@ -14,6 +16,7 @@ globals:
     post: true
     emit: true
 rules:
+    max-len: ["error", { "code": 120 }]
     indent:
         - error
         - 4
@@ -40,12 +43,12 @@ rules:
     no-useless-call: error
     no-with: error
     operator-linebreak: error
-    require-jsdoc:
-        - error
-        - require:
-            ClassDeclaration: true
-            MethodDefinition: true
-            FunctionDeclaration: true
+    # require-jsdoc:
+    #     - error
+    #     - require:
+    #         ClassDeclaration: true
+    #         MethodDefinition: true
+    #         FunctionDeclaration: true
     yoda: error
     no-confusing-arrow: 2
     no-constant-condition: 2
