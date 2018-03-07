@@ -37,5 +37,9 @@ describe('Producer', () => {
         await adminConnection.disconnect();
     });
 
-    describe('CreateWine()', () => {});
+    describe('CreateWine()', () => {
+        it('should add a bulkWine asset');
+        it('should consume the grapes');
+        it('should emit a WineCreated event');
+    });
 });

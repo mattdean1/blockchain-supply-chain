@@ -32,13 +32,17 @@ function sellGrapes(sale) {
         .then(function(grapesReg) {
             grapesRegistry = grapesReg;
             // create a new batch of grapes for the new owner
-            var id = 'GRAPES_' + 'asdf'; //uuid();
+            var id = 'GRAPES_' + Date.now(); //uuid();
             var newGrapes = factory.newResource(growerNamespace, 'Grapes', id);
             newGrapes.quantity = quantityToBeSold;
             newGrapes.species = grapes.species;
             newGrapes.harvestDate = grapes.harvestDate;
-            newGrapes.owner = factory.newRelationship('biswas.producer', 'WineProducer', buyer);
-            newGrapes.grapeGrower = factory.newRelationship(growerNamespace, 'GrapeGrower', grapes.grapeGrower);
+            newGrapes.owner = factory.newRelationship('biswas.producer', 'WineProducer', buyer.$identifier);
+            newGrapes.grapeGrower = factory.newRelationship(
+                growerNamespace,
+                'GrapeGrower',
+                grapes.grapeGrower.$identifier
+            );
             newGrapes.vineyard = factory.newRelationship(growerNamespace, 'Vineyard', grapes.vineyard);
 
             return grapesRegistry.add(newGrapes);

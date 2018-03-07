@@ -45,6 +45,7 @@ describe('Grower', () => {
         beforeEach(async () => {
             let fac = businessNetworkConnection.getBusinessNetwork().getFactory();
 
+            // Create resources
             const vineyard = fac.newResource(growerNamespace, 'Vineyard', 'vyard_001');
             vineyard.altitude = 100;
             vineyard.location = fac.newConcept(growerNamespace, 'Location');
@@ -75,47 +76,41 @@ describe('Grower', () => {
                 }
             );
 
-            try {
-                const grapes = fac.newResource(growerNamespace, 'Grapes', grapesName);
-                grapes.quantity = 100;
-                const growerRelation = fac.newRelationship(growerNamespace, 'GrapeGrower', grower.$identifier);
-                grapes.owner = growerRelation;
-                grapes.grapeGrower = growerRelation;
-                grapes.species = 'red';
-                grapes.harvestDate = new Date(Date.now()); //.toISOString()
-                grapes.vineyard = fac.newRelationship(growerNamespace, 'Vineyard', vineyard.$identifier);
-                await utils.addAsset(businessNetworkConnection, growerNamespace, 'Grapes', grapes);
-            } catch (e) {
-                throw new Error('asdf' + e);
-            }
-        });
+            const grapes = fac.newResource(growerNamespace, 'Grapes', grapesName);
+            grapes.quantity = 100;
+            const growerRelation = fac.newRelationship(growerNamespace, 'GrapeGrower', grower.$identifier);
+            grapes.owner = growerRelation;
+            grapes.grapeGrower = growerRelation;
+            grapes.species = 'red';
+            grapes.harvestDate = new Date(Date.now()); //.toISOString()
+            grapes.vineyard = fac.newRelationship(growerNamespace, 'Vineyard', vineyard.$identifier);
+            await utils.addAsset(businessNetworkConnection, growerNamespace, 'Grapes', grapes);
 
-        it('should decrease the quantity of the original grapes', async () => {
+            // Submit tx
             businessNetworkConnection = await utils.connectParticipant(
                 businessNetworkConnection,
                 cardStore,
                 growerName
             );
-            const fac = businessNetworkConnection.getBusinessNetwork().getFactory();
-
+            fac = businessNetworkConnection.getBusinessNetwork().getFactory();
             const sellGrapes = fac.newTransaction(growerNamespace, 'SellGrapes');
             sellGrapes.quantity = 45;
             sellGrapes.grapes = fac.newRelationship(growerNamespace, 'Grapes', grapesName);
-            sellGrapes.buyer = fac.newRelationship(producerNamespace, 'WineProducer', 'producer');
+            sellGrapes.buyer = fac.newRelationship(producerNamespace, 'WineProducer', producerName);
+            await businessNetworkConnection.submitTransaction(sellGrapes);
+        });
 
-            return businessNetworkConnection
-                .submitTransaction(sellGrapes)
-                .then(() => {
-                    return businessNetworkConnection.getAssetRegistry(growerNamespace + '.Grapes');
-                })
-                .then(grapesRegistry => {
-                    // Get the asset
-                    return grapesRegistry.get(grapesName);
-                })
-                .then(grapes => {
-                    // Assert that the asset has the new value property
-                    grapes.quantity.should.equal(55);
-                });
+        it('should decrease the quantity of the original grapes', async () => {
+            const grapesRegistry = await businessNetworkConnection.getAssetRegistry(growerNamespace + '.Grapes');
+            const grapes = await grapesRegistry.get(grapesName);
+            grapes.quantity.should.equal(55);
+        });
+        it('should create a new batch for the new owner with the correct quantity', async () => {
+            const grapesRegistry = await businessNetworkConnection.getAssetRegistry(growerNamespace + '.Grapes');
+            const grapes = await grapesRegistry.getAll();
+            const newOwnerGrapes = grapes.filter(g => g.owner.$identifier === producerName);
+            newOwnerGrapes.length.should.equal(1);
+            newOwnerGrapes[0].quantity.should.equal(45);
         });
     });
 });
