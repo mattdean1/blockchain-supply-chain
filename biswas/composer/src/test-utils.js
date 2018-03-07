@@ -12,7 +12,8 @@ const constants = {
     growerNamespace: 'biswas.grower',
     producerNamespace: 'biswas.producer',
     growerName: 'Grower1',
-    producerName: 'Producer1'
+    producerName: 'Producer1',
+    vineyardName: 'Vineyard1'
 };
 
 async function createAdminIdentity(cardStore, name) {
@@ -77,7 +78,7 @@ async function setupParticipants(adminConnection, businessNetworkConnection) {
     let fac = businessNetworkConnection.getBusinessNetwork().getFactory();
 
     // Create resources
-    const vineyard = fac.newResource(constants.growerNamespace, 'Vineyard', 'vyard_001');
+    const vineyard = fac.newResource(constants.growerNamespace, 'Vineyard', constants.vineyardName);
     vineyard.altitude = 100;
     vineyard.location = fac.newConcept(constants.growerNamespace, 'Location');
     vineyard.location.latitude = 0.0;
