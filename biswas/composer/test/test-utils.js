@@ -1,33 +1,30 @@
 'use strict';
 
-/**
- * Write the unit tests for your transction processor functions here
- */
-
 const AdminConnection = require('composer-admin').AdminConnection;
 const BusinessNetworkConnection = require('composer-client').BusinessNetworkConnection;
 const { CertificateUtil, IdCard, BusinessNetworkDefinition } = require('composer-common');
 
 const path = require('path');
 
-async function createAdminIdentity1(cardStore) {
+async function createAdminIdentity(cardStore, name) {
     // Embedded connection used for local testing
     const connectionProfile = {
         name: 'embedded',
-        'x-type': 'embedded'
+        'x-type': 'embedded',
+        businessNetwork: 'biswas'
     };
     const credentials = CertificateUtil.generate({ commonName: 'admin' });
 
     // PeerAdmin identity used with the admin connection to deploy business networks
     const deployerMetadata = {
         version: 1,
-        userName: 'PeerAdmin',
+        userName: name,
         roles: ['PeerAdmin', 'ChannelAdmin']
     };
     const deployerCard = new IdCard(deployerMetadata, connectionProfile);
     deployerCard.setCredentials(credentials);
 
-    const deployerCardName = 'PeerAdmin';
+    const deployerCardName = name;
     let adminConnection = new AdminConnection({ cardStore: cardStore });
 
     await adminConnection.importCard(deployerCardName, deployerCard);
@@ -35,7 +32,9 @@ async function createAdminIdentity1(cardStore) {
     return adminConnection;
 }
 
-async function deployNetwork1(cardStore, adminConnection) {
+async function getAdminConnection(cardStore) {}
+
+async function deployNetwork(cardStore, adminConnection) {
     let businessNetworkConnection = new BusinessNetworkConnection({
         cardStore: cardStore
     });
@@ -60,7 +59,15 @@ async function deployNetwork1(cardStore, adminConnection) {
     return businessNetworkConnection;
 }
 
+async function clearWallet(adminConnection) {
+    const cards = await adminConnection.getAllCards();
+    for (let [cardName, _] of cards) {
+        await adminConnection.deleteCard(cardName);
+    }
+}
+
 module.exports = {
-    createAdminIdentity1,
-    deployNetwork1
+    createAdminIdentity,
+    deployNetwork,
+    clearWallet
 };
