@@ -10,6 +10,7 @@ require('chai').should();
 
 const utils = require('../src/utils.js');
 const testUtils = require('../src/test-utils.js');
+const constants = testUtils.constants;
 
 const growerNamespace = 'biswas.grower';
 const producerNamespace = 'biswas.producer';
@@ -38,42 +39,14 @@ describe('Grower', () => {
     });
 
     describe('SellGrapes()', () => {
-        const growerName = 'Grower1';
-        const producerName = 'Producer1';
         const grapesName = 'Grapes1';
 
         beforeEach(async () => {
             let fac = businessNetworkConnection.getBusinessNetwork().getFactory();
 
-            // Create resources
-            const vineyard = fac.newResource(growerNamespace, 'Vineyard', 'vyard_001');
-            vineyard.altitude = 100;
-            vineyard.location = fac.newConcept(growerNamespace, 'Location');
-            vineyard.location.latitude = 0.0;
-            vineyard.location.longitude = 0.0;
-            await utils.addAsset(businessNetworkConnection, growerNamespace, 'Vineyard', vineyard);
-
-            const grower = await utils.addUsableParticipant(
+            const { grower, vineyard, producer } = await testUtils.setupParticipants(
                 adminConnection,
-                businessNetworkConnection,
-                growerNamespace,
-                'GrapeGrower',
-                growerName,
-                {
-                    email: 'string@grower.com',
-                    vineyards: [vineyard]
-                }
-            );
-
-            const producer = await utils.addUsableParticipant(
-                adminConnection,
-                businessNetworkConnection,
-                producerNamespace,
-                'WineProducer',
-                producerName,
-                {
-                    email: 'string@producer.com'
-                }
+                businessNetworkConnection
             );
 
             const grapes = fac.newResource(growerNamespace, 'Grapes', grapesName);
@@ -90,13 +63,13 @@ describe('Grower', () => {
             businessNetworkConnection = await utils.connectParticipant(
                 businessNetworkConnection,
                 cardStore,
-                growerName
+                constants.growerName
             );
             fac = businessNetworkConnection.getBusinessNetwork().getFactory();
             const sellGrapes = fac.newTransaction(growerNamespace, 'SellGrapes');
             sellGrapes.quantity = 45;
             sellGrapes.grapes = fac.newRelationship(growerNamespace, 'Grapes', grapesName);
-            sellGrapes.buyer = fac.newRelationship(producerNamespace, 'WineProducer', producerName);
+            sellGrapes.buyer = fac.newRelationship(producerNamespace, 'WineProducer', constants.producerName);
             await businessNetworkConnection.submitTransaction(sellGrapes);
         });
 
@@ -108,7 +81,7 @@ describe('Grower', () => {
         it('should create a new batch for the new owner with the correct quantity', async () => {
             const grapesRegistry = await businessNetworkConnection.getAssetRegistry(growerNamespace + '.Grapes');
             const grapes = await grapesRegistry.getAll();
-            const newOwnerGrapes = grapes.filter(g => g.owner.$identifier === producerName);
+            const newOwnerGrapes = grapes.filter(g => g.owner.$identifier === constants.producerName);
             newOwnerGrapes.length.should.equal(1);
             newOwnerGrapes[0].quantity.should.equal(45);
         });

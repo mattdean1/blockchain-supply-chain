@@ -1,10 +1,19 @@
 'use strict';
 
+const path = require('path');
+
 const AdminConnection = require('composer-admin').AdminConnection;
 const BusinessNetworkConnection = require('composer-client').BusinessNetworkConnection;
 const { CertificateUtil, IdCard, BusinessNetworkDefinition } = require('composer-common');
 
-const path = require('path');
+const utils = require('./utils');
+
+const constants = {
+    growerNamespace: 'biswas.grower',
+    producerNamespace: 'biswas.producer',
+    growerName: 'Grower1',
+    producerName: 'Producer1'
+};
 
 async function createAdminIdentity(cardStore, name) {
     // Embedded connection used for local testing
@@ -64,8 +73,51 @@ async function clearWallet(adminConnection) {
     }
 }
 
+async function setupParticipants(adminConnection, businessNetworkConnection) {
+    let fac = businessNetworkConnection.getBusinessNetwork().getFactory();
+
+    // Create resources
+    const vineyard = fac.newResource(constants.growerNamespace, 'Vineyard', 'vyard_001');
+    vineyard.altitude = 100;
+    vineyard.location = fac.newConcept(constants.growerNamespace, 'Location');
+    vineyard.location.latitude = 0.0;
+    vineyard.location.longitude = 0.0;
+    await utils.addAsset(businessNetworkConnection, constants.growerNamespace, 'Vineyard', vineyard);
+
+    const grower = await utils.addUsableParticipant(
+        adminConnection,
+        businessNetworkConnection,
+        constants.growerNamespace,
+        'GrapeGrower',
+        constants.growerName,
+        {
+            email: 'string@grower.com',
+            vineyards: [vineyard]
+        }
+    );
+
+    const producer = await utils.addUsableParticipant(
+        adminConnection,
+        businessNetworkConnection,
+        constants.producerNamespace,
+        'WineProducer',
+        constants.producerName,
+        {
+            email: 'string@producer.com'
+        }
+    );
+
+    return {
+        vineyard,
+        grower,
+        producer
+    };
+}
+
 module.exports = {
     createAdminIdentity,
     deployNetwork,
-    clearWallet
+    clearWallet,
+    constants,
+    setupParticipants
 };
