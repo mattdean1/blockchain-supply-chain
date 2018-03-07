@@ -10,10 +10,7 @@ require('chai').should();
 
 const utils = require('../src/utils.js');
 const testUtils = require('../src/test-utils.js');
-
-const growerNamespace = 'biswas.grower';
-const producerNamespace = 'biswas.producer';
-const assetType = 'Grapes';
+const constants = testUtils.constants;
 
 describe('Producer', () => {
     let adminConnection;
@@ -38,8 +35,70 @@ describe('Producer', () => {
     });
 
     describe('CreateWine()', () => {
-        it('should add a bulkWine asset');
-        it('should consume the grapes');
-        it('should emit a WineCreated event');
+        const grapesName = 'Grapes1';
+        let events = [];
+
+        beforeEach(async () => {
+            const { grower, vineyard, producer } = await testUtils.setupParticipants(
+                adminConnection,
+                businessNetworkConnection
+            );
+            let fac = businessNetworkConnection.getBusinessNetwork().getFactory();
+
+            // create grapes
+            const grapes = fac.newResource(constants.growerNamespace, 'Grapes', grapesName);
+            grapes.quantity = 100;
+            grapes.owner = fac.newRelationship(constants.producerNamespace, 'WineProducer', constants.producerName);
+            grapes.grapeGrower = fac.newRelationship(constants.growerNamespace, 'GrapeGrower', constants.growerName);
+            grapes.species = 'red';
+            grapes.harvestDate = new Date(Date.now());
+            grapes.vineyard = fac.newRelationship(constants.growerNamespace, 'Vineyard', constants.vineyardName);
+            await utils.addAsset(businessNetworkConnection, constants.growerNamespace, 'Grapes', grapes);
+
+            // submit tx
+            businessNetworkConnection = await utils.connectParticipant(
+                businessNetworkConnection,
+                cardStore,
+                constants.producerName
+            );
+            events = [];
+            businessNetworkConnection.on('event', event => {
+                events.push(event);
+            });
+            fac = businessNetworkConnection.getBusinessNetwork().getFactory();
+            const createWine = fac.newTransaction(constants.producerNamespace, 'CreateWine');
+            createWine.grapes = fac.newRelationship(constants.growerNamespace, 'Grapes', grapesName);
+            await businessNetworkConnection.submitTransaction(createWine);
+        });
+
+        it('should add a bulkWine asset with the correct year', async () => {
+            const bwRegistry = await businessNetworkConnection.getAssetRegistry(
+                constants.producerNamespace + '.BulkWine'
+            );
+            const bw = await bwRegistry.getAll();
+            bw.length.should.equal(1);
+            bw[0].year.should.equal(new Date(Date.now()).getFullYear());
+        });
+
+        it('should consume the grapes', async () => {
+            const grapesRegistry = await businessNetworkConnection.getAssetRegistry(
+                constants.growerNamespace + '.Grapes'
+            );
+            const grapes = await grapesRegistry.get(grapesName);
+            grapes.quantity.should.equal(0);
+        });
+
+        it('should emit a WineCreated event', async () => {
+            events.length.should.equal(1);
+            events[0].$type.should.equal('WineCreated');
+        });
+
+        it('should refer to the correct bulkWine in the event', async () => {
+            const bwRegistry = await businessNetworkConnection.getAssetRegistry(
+                constants.producerNamespace + '.BulkWine'
+            );
+            const bw = await bwRegistry.getAll();
+            events[0].bulkWine.$identifier.should.equal(bw[0].$identifier);
+        });
     });
 });
