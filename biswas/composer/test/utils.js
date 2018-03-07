@@ -7,7 +7,7 @@ const BusinessNetworkConnection = require('composer-client').BusinessNetworkConn
 const { BusinessNetworkDefinition, NetworkCardStoreManager, CertificateUtil, IdCard } = require('composer-common');
 
 const utils = require('../src/utils');
-const testUtils = require('./test-utils');
+const testUtils = require('../src/test-utils');
 
 describe('Utils', () => {
     let adminConnection;
@@ -50,7 +50,28 @@ describe('Utils', () => {
         });
     });
 
-    describe('Creating new participants', () => {
+    describe('Creating new resources', () => {
+        describe('addAsset', () => {
+            it('should add an asset to the registry', async () => {
+                const growerNamespace = 'biswas.grower';
+                const assetType = 'Vineyard';
+                const assetID = 'vyard_001';
+                let fac = businessNetworkConnection.getBusinessNetwork().getFactory();
+
+                const vineyard = fac.newResource(growerNamespace, assetType, assetID);
+                vineyard.altitude = 100;
+                vineyard.location = fac.newConcept(growerNamespace, 'Location');
+                vineyard.location.latitude = 0.0;
+                vineyard.location.longitude = 0.0;
+                await utils.addAsset(businessNetworkConnection, growerNamespace, assetType, vineyard);
+
+                const vineyardRegistry = await businessNetworkConnection.getAssetRegistry(
+                    growerNamespace + '.' + assetType
+                );
+                const assetExists = await vineyardRegistry.exists(assetID);
+                assetExists.should.equal(true);
+            });
+        });
         describe('addParticipant', () => {
             it('should add a participant to the registry', async () => {
                 const namespace = 'biswas.grower';

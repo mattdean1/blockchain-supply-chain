@@ -32,8 +32,6 @@ async function createAdminIdentity(cardStore, name) {
     return adminConnection;
 }
 
-async function getAdminConnection(cardStore) {}
-
 async function deployNetwork(cardStore, adminConnection) {
     let businessNetworkConnection = new BusinessNetworkConnection({
         cardStore: cardStore
