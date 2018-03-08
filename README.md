@@ -227,6 +227,12 @@ Repeat the process under the 'Fabric' heading above whilst in the `fabric` direc
 
 It's worth taking a look at the [Composer multi-org install tutorial](https://hyperledger.github.io/composer/next/tutorials/deploy-to-fabric-multi-org) to see if anything has changed since these notes were made. 
 
-E.g. in this case I needed to update the connection profiles to the new format. 
+E.g. in the case of `1.0.x` to `1.1.0-rc1` I needed to update the connection profiles to a new format. 
 
-Docker files already use the image tagged with `latest`. Change the name of the `--ca-keyfile` option in the certificate authority definition.
+Docker files already use the image tagged with `latest`. 
+
+Running `cryptogen` again will generate different names for some key files, so change the name in:
+
+- The `--ca-keyfile` option in the certificate authority definition
+- `remakeIdentities.sh` 
+- The "Create business network cards for fabric admins" section of this document.
