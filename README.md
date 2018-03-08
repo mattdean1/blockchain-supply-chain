@@ -28,6 +28,17 @@ composer archive create --sourceType dir --sourceName .
 
 # Fabric
 
+## Download Binaries
+
+Run the following command within the directory you wish to extract the binaries into:
+
+````
+curl -sSL https://goo.gl/6wtTN5 | bash -s 1.1.0-rc1
+export PATH=/path/to/binaries:$PATH
+````
+
+
+
 ## Prepare filestructure
 
 ```shell
@@ -80,8 +91,8 @@ configtxgen -profile ChannelCreation -outputAnchorPeersUpdate ./artifacts/channe
 ```Shell
 export COMPOSE_PROJECT_NAME=biswas
 
-docker-compose -f docker/docker-compose-cli.yaml up -d
-docker-compose -f docker/docker-compose-cli.yaml down
+docker-compose -f docker/docker-compose-sdk.yaml up -d
+docker-compose -f docker/docker-compose-sdk.yaml down
 ```
 
 ### Set up channel
@@ -104,57 +115,50 @@ Alternatively, you can use `docker exec -it cli bash` and run the commands from 
 
 ### Create business network cards for fabric admins 
 
+Replace names of keys (i.e. `*_sk`) with the actual filename.
+
 ```
 mkdir ./id-cards
 
-composer card create\
- -p connection-profiles/grower-only.json\
- -u PeerAdmin\
- -r PeerAdmin -r ChannelAdmin\
- -f ./id-cards/PeerAdmin@biswas-grower-only.card\
- -k ./artifacts/certs/peerOrganizations/grower.biswas.com/users/Admin@grower.biswas.com/msp/keystore/9044f752bda7b418c96df5a23ff4f7901ff3ce138d0897fd391f6bc2ed6354aa_sk\
- -c ./artifacts/certs/peerOrganizations/grower.biswas.com/users/Admin@grower.biswas.com/msp/signcerts/Admin@grower.biswas.com-cert.pem
- 
 composer card create\
  -p connection-profiles/grower.json\
  -u PeerAdmin\
  -r PeerAdmin -r ChannelAdmin\
  -f ./id-cards/PeerAdmin@biswas-grower.card\
- -k ./artifacts/certs/peerOrganizations/grower.biswas.com/users/Admin@grower.biswas.com/msp/keystore/9044f752bda7b418c96df5a23ff4f7901ff3ce138d0897fd391f6bc2ed6354aa_sk\
+ -k ./artifacts/certs/peerOrganizations/grower.biswas.com/users/Admin@grower.biswas.com/msp/keystore/8ef3b6e18b7aa0065d4447bd0032a3b2023a659fd1bfb13358c4d7f7cafb39c6_sk\
  -c ./artifacts/certs/peerOrganizations/grower.biswas.com/users/Admin@grower.biswas.com/msp/signcerts/Admin@grower.biswas.com-cert.pem
 
-composer card import -f ./id-cards/PeerAdmin@biswas-grower-only.card
 composer card import -f ./id-cards/PeerAdmin@biswas-grower.card
 
 composer card create\
- -p connection-profiles/producer-only.json\
+ -p connection-profiles/producer.json\
  -u PeerAdmin\
  -r PeerAdmin -r ChannelAdmin\
- -f ./id-cards/PeerAdmin@biswas-producer-only.card\
- -k ./artifacts/certs/peerOrganizations/producer.biswas.com/users/Admin@producer.biswas.com/msp/keystore/e3acea33608a5a7e2ecdd11fa0539a4cda0206053714fe04e82359089f27ba85_sk\
+ -f ./id-cards/PeerAdmin@biswas-producer.card\
+ -k ./artifacts/certs/peerOrganizations/producer.biswas.com/users/Admin@producer.biswas.com/msp/keystore/d1c84d49eaae90e3cff68461d8c7079c0317bb811b6ffe4c39bb17898845ebdb_sk\
  -c ./artifacts/certs/peerOrganizations/producer.biswas.com/users/Admin@producer.biswas.com/msp/signcerts/Admin@producer.biswas.com-cert.pem
 
-composer card import -f ./id-cards/PeerAdmin@biswas-producer-only.card
+composer card import -f ./id-cards/PeerAdmin@biswas-producer.card
 ```
 
 ### Install composer runtime
 
 ```
-composer runtime install -c PeerAdmin@biswas-grower-only -n biswas
-composer runtime install -c PeerAdmin@biswas-producer-only -n biswas
+composer runtime install -c PeerAdmin@biswas-grower -n biswas
+composer runtime install -c PeerAdmin@biswas-producer -n biswas
 ```
 
 ### Enroll identities and create BNCs for network admins
 
 ```
-composer identity request -c PeerAdmin@biswas-grower-only -u admin -s adminpw -d ./id-cards/grower-network-admin
+composer identity request -c PeerAdmin@biswas-grower -u admin -s adminpw -d ./id-cards/grower-network-admin
 
 composer card create -p connection-profiles/grower.json -u grower-network-admin -n biswas -c id-cards/grower-network-admin/admin-pub.pem -k id-cards/grower-network-admin/admin-priv.pem -f id-cards/grower-network-admin.card
 
 composer card import -f id-cards/grower-network-admin.card
 
 
-composer identity request -c PeerAdmin@biswas-producer-only -u admin -s adminpw -d ./id-cards/producer-network-admin
+composer identity request -c PeerAdmin@biswas-producer -u admin -s adminpw -d ./id-cards/producer-network-admin
 
 composer card create -p connection-profiles/producer.json -u producer-network-admin -n biswas -c id-cards/producer-network-admin/admin-pub.pem -k id-cards/producer-network-admin/admin-priv.pem -f id-cards/producer-network-admin.card
 
@@ -165,8 +169,8 @@ composer card import -f id-cards/producer-network-admin.card
 
 ```
 composer network start\
- -c PeerAdmin@biswas-grower-only\
- -a composer/biswas@0.0.2.bna\
+ -c PeerAdmin@biswas-grower\
+ -a composer/biswas.bna\
  -A grower-network-admin\
  -C fabric/id-cards/grower-network-admin/admin-pub.pem\
  -A producer-network-admin\
@@ -182,3 +186,47 @@ composer network ping -c grower-network-admin@biswas
 composer network ping -c producer-network-admin@biswas
 ```
 
+
+
+
+
+# Upgrade process
+
+#### Remove previously generated fabric artifacts
+
+```
+rm -rf fabric/artifacts fabric/id-cards
+```
+
+#### Delete previously imported composer identities
+
+```
+composer card delete -n [cardname]
+
+# If you have already upgraded the composer cli
+rm -fr $HOME/.composer 
+```
+
+#### Upgrade globally installed composer packages
+
+```
+npm uninstall -g composer-cli composer-rest-server
+npm i -g composer-cli@next composer-rest-server@next
+```
+
+#### Upgrade locally installed composer packages
+
+```
+cd composer
+npm i composer-admin@next composer-client@next composer-common@next composer-connector-embedded@next
+```
+
+#### Repeat the install process
+
+Repeat the process under the 'Fabric' heading above whilst in the `fabric` directory.
+
+It's worth taking a look at the [Composer multi-org install tutorial](https://hyperledger.github.io/composer/next/tutorials/deploy-to-fabric-multi-org) to see if anything has changed since these notes were made. 
+
+E.g. in this case I needed to update the connection profiles to the new format. 
+
+Docker files already use the image tagged with `latest`. Change the name of the `--ca-keyfile` option in the certificate authority definition.

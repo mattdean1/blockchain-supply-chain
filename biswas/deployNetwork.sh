@@ -7,12 +7,12 @@ export COMPOSE_PROJECT_NAME=biswas
 docker exec cli /bin/sh "./createChannel.sh"
 
 # Install composer runtime onto peers
-composer runtime install -c PeerAdmin@biswas-grower-only -n biswas
-composer runtime install -c PeerAdmin@biswas-producer-only -n biswas
+composer runtime install -c PeerAdmin@biswas-grower -n biswas
+composer runtime install -c PeerAdmin@biswas-producer -n biswas
 
 # Install the business network and start it
 composer network start\
- -c PeerAdmin@biswas-grower-only\
+ -c PeerAdmin@biswas-grower\
  -a composer/biswas.bna\
  -A grower-network-admin\
  -C fabric/id-cards/grower-network-admin/admin-pub.pem\

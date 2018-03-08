@@ -10,7 +10,7 @@ services:
       - FABRIC_CA_SERVER_CA_NAME=ca-producer
     ports:
       - "8054:7054"
-    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/ca.producer.biswas.com-cert.pem --ca.keyfile /etc/hyperledger/f3ac32193791a0699276d96723e61d0938be2b2528f19fb985036a206ba1656c_sk -b admin:adminpw -d'
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/ca.producer.biswas.com-cert.pem --ca.keyfile /etc/hyperledger/0bd35d30f74a01eb396d293ad96d5b68baa7f2df453f4c05d055696a015c682b_sk -b admin:adminpw -d'
     volumes:
       - ../artifacts/certs/peerOrganizations/producer.biswas.com/ca:/etc/hyperledger
 
