@@ -20,13 +20,8 @@ composer network start\
  -C fabric/id-cards/producer-network-admin/admin-pub.pem
 
 # Ping network to check it's up
-echo "Expect the first ping to fail..."
-composer network ping -c grower-network-admin@biswas
-sleep 5
 composer network ping -c grower-network-admin@biswas
 
-composer network ping -c producer-network-admin@biswas
-sleep 5
 composer network ping -c producer-network-admin@biswas
 
 # Remove unnecessary ID cards created as part of the deploy process
