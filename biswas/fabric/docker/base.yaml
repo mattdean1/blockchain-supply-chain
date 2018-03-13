@@ -19,6 +19,7 @@ services:
       - CORE_PEER_GOSSIP_USELEADERELECTION=true
       - CORE_PEER_GOSSIP_ORGLEADER=false
       - CORE_PEER_PROFILE_ENABLED=true
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
     working_dir: /opt/gopath
     command: peer node start
 

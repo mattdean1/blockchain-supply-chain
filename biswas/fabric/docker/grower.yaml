@@ -1,6 +1,35 @@
 version: '2'
 
 services:
+  ca:
+    container_name: ca.grower.biswas.com
+    extends:
+      file: base.yaml
+      service: ca-base
+    environment:
+      - FABRIC_CA_SERVER_CA_NAME=ca-grower
+    ports:
+      - "7054:7054"
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/ca.grower.biswas.com-cert.pem --ca.keyfile /etc/hyperledger/28b5665c29645f5ff63627fef9eb2af32655870938749efbcb2e96fe2862300d_sk -b admin:adminpw -d'
+    volumes:
+      - ../artifacts/certs/peerOrganizations/grower.biswas.com/ca:/etc/hyperledger
+
+
+  peer0-db:
+    container_name: peer0-db.grower.biswas.com
+    image: hyperledger/fabric-couchdb
+    environment:
+      - COUCHDB_USER=growerpeer0admin
+      - COUCHDB_PASSWORD=pass
+
+  peer1-db:
+    container_name: peer1-db.grower.biswas.com
+    image: hyperledger/fabric-couchdb
+    environment:
+      - COUCHDB_USER=growerpeer1admin
+      - COUCHDB_PASSWORD=pass
+
+
   peer0:
     container_name: peer0.grower.biswas.com
     extends:
@@ -11,6 +40,9 @@ services:
       - CORE_PEER_ADDRESS=peer0.grower.biswas.com:7051
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.grower.biswas.com:7051
       - CORE_PEER_LOCALMSPID=GrowerMSP
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=peer0-db.grower.biswas.com:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=growerpeer0admin
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=pass
     volumes:
         - /var/run/:/host/var/run/
         - ../artifacts/certs/peerOrganizations/grower.biswas.com/peers/peer0.grower.biswas.com/msp:/etc/hyperledger/fabric/msp
@@ -29,22 +61,12 @@ services:
       - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.grower.biswas.com:7051
       - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.grower.biswas.com:7051
       - CORE_PEER_LOCALMSPID=GrowerMSP
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=peer1-db.grower.biswas.com:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=growerpeer1admin
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=pass
     volumes:
         - /var/run/:/host/var/run/
         - ../artifacts/certs/peerOrganizations/grower.biswas.com/peers/peer1.grower.biswas.com/msp:/etc/hyperledger/fabric/msp
     ports:
       - 8051:7051
       - 8053:7053
-
-  ca:
-    container_name: ca.grower.biswas.com
-    extends:
-      file: base.yaml
-      service: ca-base
-    environment:
-      - FABRIC_CA_SERVER_CA_NAME=ca-grower
-    ports:
-      - "7054:7054"
-    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/ca.grower.biswas.com-cert.pem --ca.keyfile /etc/hyperledger/28b5665c29645f5ff63627fef9eb2af32655870938749efbcb2e96fe2862300d_sk -b admin:adminpw -d'
-    volumes:
-      - ../artifacts/certs/peerOrganizations/grower.biswas.com/ca:/etc/hyperledger

@@ -23,12 +23,28 @@ services:
     networks:
       - biswas
 
+  peer0-db.grower.biswas.com:
+    extends:
+      file: grower.yaml
+      service: peer0-db
+    networks:
+      - biswas
+
+  peer1-db.grower.biswas.com:
+    extends:
+      file: grower.yaml
+      service: peer1-db
+    networks:
+      - biswas
+
   peer0.grower.biswas.com:
     extends:
       file:  grower.yaml
       service: peer0
     networks:
       - biswas
+    depends_on:
+      - peer0-db.grower.biswas.com
 
   peer1.grower.biswas.com:
     extends:
@@ -36,6 +52,8 @@ services:
       service: peer1
     networks:
       - biswas
+    depends_on:
+      - peer1-db.grower.biswas.com
 
 
   ca.producer.biswas.com:
@@ -45,12 +63,28 @@ services:
     networks:
       - biswas
 
+  peer0-db.producer.biswas.com:
+    extends:
+      file: producer.yaml
+      service: peer0-db
+    networks:
+      - biswas
+
+  peer1-db.producer.biswas.com:
+    extends:
+      file: producer.yaml
+      service: peer1-db
+    networks:
+      - biswas
+
   peer0.producer.biswas.com:
     extends:
       file:  producer.yaml
       service: peer0
     networks:
       - biswas
+    depends_on:
+      - peer0-db.producer.biswas.com
 
   peer1.producer.biswas.com:
     extends:
@@ -58,6 +92,8 @@ services:
       service: peer1
     networks:
       - biswas
+    depends_on:
+      - peer1-db.producer.biswas.com
 
 
   cli:
