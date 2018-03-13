@@ -6,15 +6,15 @@ query northernVineyards{
 }
 
 query largeWineBatches{
-  description: "Select batches of wine larger than the given parameter"
+  description: "Select batches of wine larger than or equal to the given parameter"
   statement:
     SELECT biswas.producer.BulkWine
-      WHERE (quantity > _$quantityParam)
+      WHERE (quantity >= _$quantityParam)
 }
 
 query historianQuery{
   description: "Find all the batches of wine created by a producer"
   statement:
       SELECT org.hyperledger.composer.system.HistorianRecord
-          WHERE ((transactionType == 'CreateWine') AND (participantInvoking == _$producerParam))
+          WHERE ((transactionType == 'biswas.producer.CreateWine') AND (participantInvoking == _$producerParam))
 }

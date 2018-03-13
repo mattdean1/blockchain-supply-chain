@@ -17,12 +17,22 @@ function sellGrapes(sale) {
     if (quantityToBeSold > grapes.quantity) {
         throw new Error('Batch of grapes is too small');
     }
+    if (quantityToBeSold <= 0) {
+        throw new Error('You must sell at least one grape!');
+    }
     var grower = getCurrentParticipant();
     var growerID = grower.$identifier;
     if (grapes.owner.$identifier !== growerID || grapes.grapeGrower.$identifier !== growerID) {
         throw new Error('You do not own those grapes');
     }
-    if (!grower.vineyards || !grower.vineyards.map(v => v.$identifier).includes(grapes.vineyard.$identifier)) {
+    if (
+        !grower.vineyards ||
+        !grower.vineyards
+            .map(function(v) {
+                return v.$identifier;
+            })
+            .includes(grapes.vineyard.$identifier)
+    ) {
         throw new Error('Those grapes are not from your vineyard');
     }
     // check buyer exists?
@@ -43,7 +53,7 @@ function sellGrapes(sale) {
                 'GrapeGrower',
                 grapes.grapeGrower.$identifier
             );
-            newGrapes.vineyard = factory.newRelationship(growerNamespace, 'Vineyard', grapes.vineyard);
+            newGrapes.vineyard = factory.newRelationship(growerNamespace, 'Vineyard', grapes.vineyard.$identifier);
 
             return grapesRegistry.add(newGrapes);
         })
