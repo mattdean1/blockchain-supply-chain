@@ -6,10 +6,10 @@ query northernVineyards{
 }
 
 query largeWineBatches{
-  description: "Select batches of wine larger than or equal to the given parameter"
+  description: "Select batches of wine larger than the given parameter"
   statement:
     SELECT biswas.producer.BulkWine
-      WHERE (quantity >= _$quantityParam)
+      WHERE (quantity > _$quantityParam)
 }
 
 query historianQuery{
