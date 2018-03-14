@@ -48,6 +48,15 @@ Navigate to http://localhost:3000/auth/github and authenticate with GitHub.
 }
 ```
 
+```
+{
+  "participant": "resource:biswas.producer.WineProducer#producer1",
+  "certificate": "-----BEGIN CERTIFICATE-----MIICezCCAiGgAwIBAgIUYyow3D0ksN6ta93O9NbDU5jruD4wCgYIKoZIzj0EAwIweTELMAkGA1UEBhMCVVMxEzARBgNVBAgTCkNhbGlmb3JuaWExFjAUBgNVBAcTDVNhbiBGcmFuY2lzY28xHDAaBgNVBAoTE3Byb2R1Y2VyLmJpc3dhcy5jb20xHzAdBgNVBAMTFmNhLnByb2R1Y2VyLmJpc3dhcy5jb20wHhcNMTgwMzE0MTcyNDAwWhcNMTkwMzE0MTcyOTAwWjAxMRwwDQYDVQQLEwZjbGllbnQwCwYDVQQLEwRvcmcxMREwDwYDVQQDEwhwcm9kdWNlcjBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABJrw9mx91IfCyKmRaEvz9FDDSDMA78I8Y0wo2aVaK748rujHEz8Lf+LEYieGwV9N1Glrg/gwHDFhYSMld96Fqeejgc4wgcswDgYDVR0PAQH/BAQDAgeAMAwGA1UdEwEB/wQCMAAwHQYDVR0OBBYEFNfpoH7wnG3dCpPoxow2KC7p8ZIlMCsGA1UdIwQkMCKAIAvTXTD3SgHrOW0pOtltW2i6p/LfRT9MBdBVaWoBXGgrMF8GCCoDBAUGBwgBBFN7ImF0dHJzIjp7ImhmLkFmZmlsaWF0aW9uIjoib3JnMSIsImhmLkVucm9sbG1lbnRJRCI6InByb2R1Y2VyIiwiaGYuVHlwZSI6ImNsaWVudCJ9fTAKBggqhkjOPQQDAgNIADBFAiEA/MVOdl1J6ekTz93jer4Qbpnj1hEkIIcVamGITXTq2KoCIAve0/Pp5Yq7tVv/v/0QMr8A8r3tYQHoMYBsPmtu+sYC-----END CERTIFICATE-----"
+}
+```
+
+
+
 - Download the identity card returned and import it with `/wallet/import` using name `producer`
 - Use postman to submit a createwine tx
 
