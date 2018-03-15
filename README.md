@@ -65,8 +65,14 @@ In this mode you can actually start the rest server with an identity with minima
 #### Create a new identity to test multi-user mode
 
 ```
-composer identity issue -c producer-network-admin@biswas -f ./fabric/id-cards/producer1.card -u producer1 -a "resource:biswas.producer.WineProducer#producer1"
+composer identity issue -c producer-network-admin@biswas -f ./fabric/id-cards/producer.card -u producer1 -a "resource:biswas.producer.WineProducer#producer1"
+
+composer card import -f ./fabric/id-cards/producer.card -n producer@biswas
+composer network ping -c producer@biswas
+composer card export -n producer@biswas -f ./fabric/id-cards/producer.card
 ```
+
+To extract the certificate from the `.card` file, change the extension to `.zip` and unzip. Now you can import the producer card into the REST server wallet and hit `/system/identities/bind`. See `demo.md` for usage.
 
 # Fabric
 

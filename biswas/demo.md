@@ -32,7 +32,7 @@ export COMPOSER_PROVIDERS='{
 composer-rest-server -c grower-network-admin@biswas -a true -m true
 ```
 
-The API explorer is located at http://localhost:3000/explorer  - any request should initially fail with `401 Unauthorized`
+The API explorer is located at http://localhost:3000/explorer  - any request should initially fail with `401 Unauthorized` - make sure to logout.
 
 - Revoke all user tokens at https://github.com/settings/applications/685013
 
