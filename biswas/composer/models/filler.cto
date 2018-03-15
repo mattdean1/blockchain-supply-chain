@@ -9,13 +9,9 @@ participant Filler extends Actor {
 
 asset BottledWine extends Batch {
   --> BulkWine bulkWine
-  o Integer alcoholPercentage
+  o Integer alcoholPercentage optional
   --> Filler filler
 }
-
-//transaction bottleWine {
-//  --> BulkWine bulkWine
-//}
 
 event WineBottled {
   --> BottledWine bottles

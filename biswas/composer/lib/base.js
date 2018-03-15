@@ -1,15 +1,51 @@
 'use strict';
 
+var transformations = {
+    Grapes: {
+        namespace: 'biswas.producer',
+        name: 'BulkWine',
+        scaleFactor: 0.1
+    },
+    BulkWine: {
+        namespace: 'biswas.filler',
+        name: 'BottledWine',
+        scaleFactor: 3
+    }
+};
+
+function copyBatchProperties(oldBatch, newBatch) {
+    var forbiddenProps = ['batchId'];
+    Object.keys(oldBatch)
+        .filter(function(prop) {
+            return prop.charAt(0) !== '$' && !forbiddenProps.includes(prop);
+        })
+        .forEach(function(prop) {
+            newBatch[prop] = oldBatch[prop];
+        });
+}
+
+function assignBatchProperties(oldBatch, newBatch, factory) {
+    switch (oldBatch.$type) {
+    case 'Grapes':
+        newBatch.grapes = factory.newRelationship('biswas.grower', 'Grapes', oldBatch.$identifier);
+        newBatch.producer = factory.newRelationship('biswas.producer', 'WineProducer', newBatch.owner.$identifier);
+        newBatch.year = oldBatch.harvestDate.getFullYear();
+        break;
+    case 'BulkWine':
+        newBatch.bulkWine = factory.newRelationship('biswas.producer', 'BulkWine', oldBatch.$identifier);
+        newBatch.filler = factory.newRelationship('biswas.filler', 'Filler', newBatch.owner.$identifier);
+        break;
+    }
+}
+
 /**
  * Sell a batch
  * @param {biswas.base.sellBatch} tx
  * @transaction
  */
 function sellBatch(tx) {
-    // check wine is owned by submitter
     var batch = tx.batch;
     var factory = getFactory();
-    var NS = 'biswas';
 
     if (tx.quantity > batch.quantity) {
         throw new Error('Batch is too small');
@@ -21,17 +57,6 @@ function sellBatch(tx) {
     var seller = getCurrentParticipant();
     if (batch.owner.$identifier !== seller.$identifier) {
         throw new Error('You do not own that batch');
-    }
-
-    function assignBatchProperties(oldBatch, newBatch) {
-        var forbiddenProps = ['batchId'];
-        Object.keys(oldBatch)
-            .filter(function(prop) {
-                return prop.charAt(0) !== '$' && !forbiddenProps.includes(prop);
-            })
-            .forEach(function(prop) {
-                newBatch[prop] = oldBatch[prop];
-            });
     }
 
     var assetNamespace = tx.batch.$namespace;
@@ -47,7 +72,7 @@ function sellBatch(tx) {
             var id = assetName + '_' + Date.now();
             var newBatch = factory.newResource(assetNamespace, assetName, id);
 
-            assignBatchProperties(batch, newBatch);
+            copyBatchProperties(batch, newBatch);
             newBatch.quantity = tx.quantity;
             newBatch.owner = factory.newRelationship(buyer.$namespace, buyer.$type, buyer.$identifier);
 
@@ -58,5 +83,57 @@ function sellBatch(tx) {
             var newQuantity = batch.quantity - tx.quantity;
             batch.quantity = newQuantity;
             return batchRegistry.update(batch);
+        });
+}
+
+/**
+ * Transform a batch
+ * @param {biswas.base.transformBatch} tx
+ * @transaction
+ */
+function transformBatch(tx) {
+    // check batch is owned by submitter
+    var oldBatch = tx.batch;
+    var factory = getFactory();
+
+    var submitter = getCurrentParticipant();
+    if (oldBatch.owner.$identifier !== submitter.$identifier) {
+        throw new Error('You do not own that batch');
+    }
+
+    var oldBatchNamespace = tx.batch.$namespace;
+    var oldBatchName = tx.batch.$type;
+    var oldFQBatchName = `${oldBatchNamespace}.${oldBatchName}`;
+
+    var newBatchDetails = transformations[oldBatchName];
+    var newFQBatchName = `${newBatchDetails.namespace}.${newBatchDetails.name}`;
+
+    return getAssetRegistry(newFQBatchName)
+        .then(function(newBatchRegistry) {
+            // create a new batch for the new owner
+            var id = newBatchDetails.name + '_' + Date.now();
+            var newBatch = factory.newResource(newBatchDetails.namespace, newBatchDetails.name, id);
+
+            newBatch.quantity = parseInt(oldBatch.quantity * newBatchDetails.scaleFactor);
+            newBatch.owner = factory.newRelationship(submitter.$namespace, submitter.$type, submitter.$identifier);
+            assignBatchProperties(oldBatch, newBatch, factory);
+
+            return newBatchRegistry.add(newBatch);
+        })
+        .then(function() {
+            return getAssetRegistry(oldFQBatchName);
+        })
+        .then(function(oldBatchRegistry) {
+            // Consume the original batch
+            oldBatch.quantity = 0;
+            return oldBatchRegistry.update(oldBatch);
+        })
+        .then(function() {
+            // emit an event
+            var event = factory.newEvent('biswas.base', 'BatchTransformed');
+            event.batch = factory.newRelationship(oldBatchNamespace, oldBatchName, oldBatch.$identifier);
+            event.batchTypeConsumed = oldBatchName;
+            event.batchTypeCreated = newBatchDetails.name;
+            emit(event);
         });
 }

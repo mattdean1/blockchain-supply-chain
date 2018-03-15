@@ -21,7 +21,20 @@ const constants = {
 
     fillerNamespace: 'biswas.filler',
     fillerName: 'Filler1',
-    baseNamespace: 'biswas.base'
+    baseNamespace: 'biswas.base',
+
+    transformations: {
+        Grapes: {
+            namespace: 'biswas.producer',
+            name: 'BulkWine',
+            scaleFactor: 0.1
+        },
+        BulkWine: {
+            namespace: 'biswas.filler',
+            name: 'BottledWine',
+            scaleFactor: 3
+        }
+    }
 };
 
 async function createAdminIdentity(cardStore, name) {

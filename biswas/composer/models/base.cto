@@ -15,3 +15,12 @@ transaction sellBatch {
   --> Batch batch
   --> Actor buyer
 }
+
+transaction transformBatch {
+  --> Batch batch
+}
+event BatchTransformed {
+  o String batchTypeConsumed
+  o String batchTypeCreated
+  --> Batch batch
+}

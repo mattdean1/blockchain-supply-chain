@@ -53,13 +53,14 @@ describe('base', () => {
                 cardStore,
                 constants.producerName
             );
+
             // record emitted events
             events = [];
             businessNetworkConnection.on('event', event => {
                 events.push(event);
             });
-            fac = businessNetworkConnection.getBusinessNetwork().getFactory();
 
+            fac = businessNetworkConnection.getBusinessNetwork().getFactory();
             let tx = fac.newTransaction(constants.baseNamespace, 'sellBatch');
             tx.quantity = constants.bulkWineQuantity;
             tx.batch = fac.newRelationship(constants.producerNamespace, 'BulkWine', constants.bulkWineName);
@@ -83,6 +84,64 @@ describe('base', () => {
             const fillerOwnedWine = bw.filter(w => w.owner.$identifier === constants.fillerName);
             fillerOwnedWine.length.should.equal(1);
             fillerOwnedWine[0].quantity.should.equal(constants.bulkWineQuantity);
+        });
+    });
+
+    describe('transformBatch()', () => {
+        let events = [];
+
+        beforeEach(async () => {
+            const { producer } = await testUtils.setupParticipants(adminConnection, businessNetworkConnection);
+            let fac = businessNetworkConnection.getBusinessNetwork().getFactory();
+
+            const grapesOwner = fac.newRelationship(
+                constants.producerNamespace,
+                'WineProducer',
+                constants.producerName
+            );
+            await testUtils.addGrapes(businessNetworkConnection, grapesOwner);
+            await testUtils.addBulkWine(businessNetworkConnection);
+
+            businessNetworkConnection = await utils.connectParticipant(
+                businessNetworkConnection,
+                cardStore,
+                constants.producerName
+            );
+
+            // record emitted events
+            events = [];
+            businessNetworkConnection.on('event', event => {
+                events.push(event);
+            });
+
+            fac = businessNetworkConnection.getBusinessNetwork().getFactory();
+            let tx = fac.newTransaction(constants.baseNamespace, 'transformBatch');
+            tx.batch = fac.newRelationship(constants.producerNamespace, 'BulkWine', constants.bulkWineName);
+
+            await businessNetworkConnection.submitTransaction(tx);
+        });
+
+        it('should create a new batch of the correct asset and size', async () => {
+            const bottleRegistry = await businessNetworkConnection.getAssetRegistry(
+                constants.fillerNamespace + '.BottledWine'
+            );
+            const bottledWine = await bottleRegistry.getAll();
+            bottledWine.length.should.equal(1);
+            bottledWine[0].quantity.should.equal(
+                parseInt(constants.transformations.BulkWine.scaleFactor * constants.bulkWineQuantity)
+            );
+        });
+        it('should consume the original batch', async () => {
+            const bwRegistry = await businessNetworkConnection.getAssetRegistry(
+                constants.producerNamespace + '.BulkWine'
+            );
+            const bulkWine = await bwRegistry.get(constants.bulkWineName);
+            bulkWine.quantity.should.equal(0);
+        });
+        it('should emit a batchCreated event', () => {
+            events.length.should.equal(1);
+            const event = events[0];
+            event.$type.should.equal('BatchTransformed');
         });
     });
 });
