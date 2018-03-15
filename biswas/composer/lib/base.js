@@ -107,12 +107,13 @@ function transformBatch(tx) {
 
     var newBatchDetails = transformations[oldBatchName];
     var newFQBatchName = `${newBatchDetails.namespace}.${newBatchDetails.name}`;
+    var newBatch;
 
     return getAssetRegistry(newFQBatchName)
         .then(function(newBatchRegistry) {
             // create a new batch for the new owner
             var id = newBatchDetails.name + '_' + Date.now();
-            var newBatch = factory.newResource(newBatchDetails.namespace, newBatchDetails.name, id);
+            newBatch = factory.newResource(newBatchDetails.namespace, newBatchDetails.name, id);
 
             newBatch.quantity = parseInt(oldBatch.quantity * newBatchDetails.scaleFactor);
             newBatch.owner = factory.newRelationship(submitter.$namespace, submitter.$type, submitter.$identifier);
@@ -131,9 +132,14 @@ function transformBatch(tx) {
         .then(function() {
             // emit an event
             var event = factory.newEvent('biswas.base', 'BatchTransformed');
-            event.batch = factory.newRelationship(oldBatchNamespace, oldBatchName, oldBatch.$identifier);
             event.batchTypeConsumed = oldBatchName;
+            event.oldBatch = factory.newRelationship(oldBatchNamespace, oldBatchName, oldBatch.$identifier);
             event.batchTypeCreated = newBatchDetails.name;
+            event.newBatch = factory.newRelationship(
+                newBatchDetails.namespace,
+                newBatchDetails.name,
+                newBatch.$identifier
+            );
             emit(event);
         });
 }

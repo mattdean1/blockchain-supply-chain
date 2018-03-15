@@ -63,8 +63,8 @@ describe('Producer', () => {
                 events.push(event);
             });
             fac = businessNetworkConnection.getBusinessNetwork().getFactory();
-            const createWine = fac.newTransaction(constants.producerNamespace, 'CreateWine');
-            createWine.grapes = fac.newRelationship(constants.growerNamespace, 'Grapes', constants.grapesName);
+            const createWine = fac.newTransaction(constants.baseNamespace, 'transformBatch');
+            createWine.batch = fac.newRelationship(constants.growerNamespace, 'Grapes', constants.grapesName);
             await businessNetworkConnection.submitTransaction(createWine);
         });
 
@@ -87,7 +87,9 @@ describe('Producer', () => {
 
         it('should emit a WineCreated event', async () => {
             events.length.should.equal(1);
-            events[0].$type.should.equal('WineCreated');
+            const event = events[0];
+            event.$type.should.equal('BatchTransformed');
+            event.batchTypeCreated.should.equal('BulkWine');
         });
 
         it('should refer to the correct bulkWine in the event', async () => {
@@ -95,7 +97,7 @@ describe('Producer', () => {
                 constants.producerNamespace + '.BulkWine'
             );
             const bw = await bwRegistry.getAll();
-            events[0].bulkWine.$identifier.should.equal(bw[0].$identifier);
+            events[0].newBatch.$identifier.should.equal(bw[0].$identifier);
         });
     });
 });

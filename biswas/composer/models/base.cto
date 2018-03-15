@@ -21,6 +21,7 @@ transaction transformBatch {
 }
 event BatchTransformed {
   o String batchTypeConsumed
+  --> Batch oldBatch
   o String batchTypeCreated
-  --> Batch batch
+  --> Batch newBatch
 }

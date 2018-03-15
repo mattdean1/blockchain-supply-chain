@@ -16,5 +16,5 @@ query historianQuery{
   description: "Find all the batches of wine created by a producer"
   statement:
       SELECT org.hyperledger.composer.system.HistorianRecord
-          WHERE ((transactionType == 'biswas.producer.CreateWine') AND (participantInvoking == _$producerParam))
+          WHERE ((transactionType == 'biswas.base.transformBatch') AND (participantInvoking == _$producerParam))
 }

@@ -12,7 +12,3 @@ asset BottledWine extends Batch {
   o Integer alcoholPercentage optional
   --> Filler filler
 }
-
-event WineBottled {
-  --> BottledWine bottles
-}
