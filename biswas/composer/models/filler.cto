@@ -1,0 +1,22 @@
+namespace biswas.filler
+
+import biswas.base.Batch
+import biswas.base.Actor
+import biswas.producer.BulkWine
+
+participant Filler extends Actor {
+}
+
+asset BottledWine extends Batch {
+  --> BulkWine bulkWine
+  o Integer alcoholPercentage
+  --> Filler filler
+}
+
+//transaction bottleWine {
+//  --> BulkWine bulkWine
+//}
+
+event WineBottled {
+  --> BottledWine bottles
+}

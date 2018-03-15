@@ -117,10 +117,22 @@ async function setupParticipants(adminConnection, businessNetworkConnection) {
         }
     );
 
+    const filler = await utils.addUsableParticipant(
+        adminConnection,
+        businessNetworkConnection,
+        constants.fillerNamespace,
+        'Filler',
+        constants.fillerName,
+        {
+            email: 'string@filler.com'
+        }
+    );
+
     return {
         vineyard,
         grower,
-        producer
+        producer,
+        filler
     };
 }
 

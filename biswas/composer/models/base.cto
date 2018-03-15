@@ -9,3 +9,9 @@ abstract asset Batch identified by batchId {
   o Integer quantity
   --> Actor owner
 }
+
+transaction sellBatch {
+  o Integer quantity
+  --> Batch batch
+  --> Actor buyer
+}
