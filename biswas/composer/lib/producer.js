@@ -1,13 +1,12 @@
 'use strict';
 
 /**
- * Transfers some quantity of a resource (e.g. grapes, wine bottles)
- * from one actor to another
+ * Consumes Grapes to create BulkWine
  * @param {biswas.producer.CreateWine} create
  * @transaction
  */
 function createWine(create) {
-    // check grapes are owned by producer submitting transaction
+    // check grapes are owned by producer before submitting transaction
     var grapes = create.grapes;
     var factory = getFactory();
     var NS = 'biswas';

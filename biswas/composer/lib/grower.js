@@ -1,8 +1,7 @@
 'use strict';
 
 /**
- * Transfers some quantity of a resource (e.g. grapes, wine bottles)
- * from one actor to another
+ * Transfers some quantity of grapes from a GrapeGrower to a WineProducer
  * @param {biswas.grower.SellGrapes} sale
  * @transaction
  */
@@ -35,14 +34,13 @@ function sellGrapes(sale) {
     ) {
         throw new Error('Those grapes are not from your vineyard');
     }
-    // check buyer exists?
 
     var grapesRegistry;
     return getAssetRegistry(growerNamespace + '.Grapes')
         .then(function(grapesReg) {
             grapesRegistry = grapesReg;
             // create a new batch of grapes for the new owner
-            var id = 'GRAPES_' + Date.now(); //uuid();
+            var id = 'GRAPES_' + Date.now();
             var newGrapes = factory.newResource(growerNamespace, 'Grapes', id);
             newGrapes.quantity = quantityToBeSold;
             newGrapes.species = grapes.species;
