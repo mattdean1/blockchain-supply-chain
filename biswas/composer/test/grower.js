@@ -35,24 +35,15 @@ describe('Grower', () => {
     });
 
     describe('SellGrapes()', () => {
-        const grapesName = 'Grapes1';
-
         beforeEach(async () => {
             const { grower, vineyard, producer } = await testUtils.setupParticipants(
                 adminConnection,
                 businessNetworkConnection
             );
-
             let fac = businessNetworkConnection.getBusinessNetwork().getFactory();
-            const grapes = fac.newResource(constants.growerNamespace, 'Grapes', grapesName);
-            grapes.quantity = 100;
+
             const growerRelation = fac.newRelationship(constants.growerNamespace, 'GrapeGrower', grower.$identifier);
-            grapes.owner = growerRelation;
-            grapes.grapeGrower = growerRelation;
-            grapes.species = 'red';
-            grapes.harvestDate = new Date(Date.now()); //.toISOString()
-            grapes.vineyard = fac.newRelationship(constants.growerNamespace, 'Vineyard', vineyard.$identifier);
-            await utils.addAsset(businessNetworkConnection, constants.growerNamespace, 'Grapes', grapes);
+            await testUtils.addGrapes(businessNetworkConnection, growerRelation);
 
             // Submit tx
             businessNetworkConnection = await utils.connectParticipant(
@@ -63,7 +54,7 @@ describe('Grower', () => {
             fac = businessNetworkConnection.getBusinessNetwork().getFactory();
             const sellGrapes = fac.newTransaction(constants.growerNamespace, 'SellGrapes');
             sellGrapes.quantity = 45;
-            sellGrapes.grapes = fac.newRelationship(constants.growerNamespace, 'Grapes', grapesName);
+            sellGrapes.grapes = fac.newRelationship(constants.growerNamespace, 'Grapes', constants.grapesName);
             sellGrapes.buyer = fac.newRelationship(constants.producerNamespace, 'WineProducer', constants.producerName);
             await businessNetworkConnection.submitTransaction(sellGrapes);
         });
@@ -72,7 +63,7 @@ describe('Grower', () => {
             const grapesRegistry = await businessNetworkConnection.getAssetRegistry(
                 constants.growerNamespace + '.Grapes'
             );
-            const grapes = await grapesRegistry.get(grapesName);
+            const grapes = await grapesRegistry.get(constants.grapesName);
             grapes.quantity.should.equal(55);
         });
         it('should create a new batch for the new owner with the correct quantity', async () => {

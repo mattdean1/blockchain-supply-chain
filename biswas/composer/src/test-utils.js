@@ -10,10 +10,18 @@ const utils = require('./utils');
 
 const constants = {
     growerNamespace: 'biswas.grower',
-    producerNamespace: 'biswas.producer',
     growerName: 'Grower1',
+    vineyardName: 'Vineyard1',
+    grapesName: 'Grapes1',
+
+    producerNamespace: 'biswas.producer',
     producerName: 'Producer1',
-    vineyardName: 'Vineyard1'
+    bulkWineName: 'BulkWine1',
+    bulkWineQuantity: 100,
+
+    fillerNamespace: 'biswas.filler',
+    fillerName: 'Filler1',
+    baseNamespace: 'biswas.base'
 };
 
 async function createAdminIdentity(cardStore, name) {
@@ -85,6 +93,7 @@ async function setupParticipants(adminConnection, businessNetworkConnection) {
     vineyard.location.longitude = 0.0;
     await utils.addAsset(businessNetworkConnection, constants.growerNamespace, 'Vineyard', vineyard);
 
+    const vineyardRelation = fac.newRelationship(constants.growerNamespace, 'Vineyard', vineyard.$identifier);
     const grower = await utils.addUsableParticipant(
         adminConnection,
         businessNetworkConnection,
@@ -93,7 +102,7 @@ async function setupParticipants(adminConnection, businessNetworkConnection) {
         constants.growerName,
         {
             email: 'string@grower.com',
-            vineyards: [vineyard]
+            vineyards: [vineyardRelation]
         }
     );
 
@@ -115,10 +124,37 @@ async function setupParticipants(adminConnection, businessNetworkConnection) {
     };
 }
 
+async function addGrapes(businessNetworkConnection, owner) {
+    let fac = businessNetworkConnection.getBusinessNetwork().getFactory();
+
+    const grapes = fac.newResource(constants.growerNamespace, 'Grapes', constants.grapesName);
+    grapes.quantity = 100;
+    grapes.owner = owner;
+    grapes.grapeGrower = fac.newRelationship(constants.growerNamespace, 'GrapeGrower', constants.growerName);
+    grapes.species = 'red';
+    grapes.harvestDate = new Date(Date.now());
+    grapes.vineyard = fac.newRelationship(constants.growerNamespace, 'Vineyard', constants.vineyardName);
+    await utils.addAsset(businessNetworkConnection, constants.growerNamespace, 'Grapes', grapes);
+}
+
+async function addBulkWine(businessNetworkConnection) {
+    let fac = businessNetworkConnection.getBusinessNetwork().getFactory();
+
+    const bulkwine = fac.newResource(constants.producerNamespace, 'BulkWine', constants.bulkWineName);
+    bulkwine.quantity = constants.bulkWineQuantity;
+    bulkwine.owner = fac.newRelationship(constants.producerNamespace, 'WineProducer', constants.producerName);
+    bulkwine.year = 2018;
+    bulkwine.grapes = fac.newRelationship(constants.growerNamespace, 'Grapes', constants.grapesName);
+    bulkwine.producer = fac.newRelationship(constants.producerNamespace, 'WineProducer', constants.producerName);
+    await utils.addAsset(businessNetworkConnection, constants.producerNamespace, 'BulkWine', bulkwine);
+}
+
 module.exports = {
     createAdminIdentity,
     deployNetwork,
     clearWallet,
     constants,
-    setupParticipants
+    setupParticipants,
+    addGrapes,
+    addBulkWine
 };

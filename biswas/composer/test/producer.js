@@ -35,7 +35,6 @@ describe('Producer', () => {
     });
 
     describe('CreateWine()', () => {
-        const grapesName = 'Grapes1';
         let events = [];
 
         beforeEach(async () => {
@@ -46,14 +45,12 @@ describe('Producer', () => {
             let fac = businessNetworkConnection.getBusinessNetwork().getFactory();
 
             // create grapes
-            const grapes = fac.newResource(constants.growerNamespace, 'Grapes', grapesName);
-            grapes.quantity = 100;
-            grapes.owner = fac.newRelationship(constants.producerNamespace, 'WineProducer', constants.producerName);
-            grapes.grapeGrower = fac.newRelationship(constants.growerNamespace, 'GrapeGrower', constants.growerName);
-            grapes.species = 'red';
-            grapes.harvestDate = new Date(Date.now());
-            grapes.vineyard = fac.newRelationship(constants.growerNamespace, 'Vineyard', constants.vineyardName);
-            await utils.addAsset(businessNetworkConnection, constants.growerNamespace, 'Grapes', grapes);
+            const grapesOwner = fac.newRelationship(
+                constants.producerNamespace,
+                'WineProducer',
+                constants.producerName
+            );
+            await testUtils.addGrapes(businessNetworkConnection, grapesOwner);
 
             // submit tx
             businessNetworkConnection = await utils.connectParticipant(
@@ -67,7 +64,7 @@ describe('Producer', () => {
             });
             fac = businessNetworkConnection.getBusinessNetwork().getFactory();
             const createWine = fac.newTransaction(constants.producerNamespace, 'CreateWine');
-            createWine.grapes = fac.newRelationship(constants.growerNamespace, 'Grapes', grapesName);
+            createWine.grapes = fac.newRelationship(constants.growerNamespace, 'Grapes', constants.grapesName);
             await businessNetworkConnection.submitTransaction(createWine);
         });
 
@@ -84,7 +81,7 @@ describe('Producer', () => {
             const grapesRegistry = await businessNetworkConnection.getAssetRegistry(
                 constants.growerNamespace + '.Grapes'
             );
-            const grapes = await grapesRegistry.get(grapesName);
+            const grapes = await grapesRegistry.get(constants.grapesName);
             grapes.quantity.should.equal(0);
         });
 
