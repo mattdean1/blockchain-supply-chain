@@ -3,7 +3,7 @@
     "version": "0.0.2",
     "description": "Implementation of the supply chain model proposed by Biswas",
     "scripts": {
-        "test": "mocha --recursive"
+        "test": "mocha  './test/**/!(template).js'"
     },
     "author": "Matt Dean",
     "email": "mail@mattdean.io",
