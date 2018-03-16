@@ -12,7 +12,9 @@ const constants = {
     growerNamespace: 'biswas.grower',
     growerName: 'Grower1',
     vineyardName: 'Vineyard1',
+    vineyardRegion: 'Bordeaux',
     grapesName: 'Grapes1',
+    grapesSpecies: 'Malbec',
 
     producerNamespace: 'biswas.producer',
     producerName: 'Producer1',
@@ -21,6 +23,9 @@ const constants = {
 
     fillerNamespace: 'biswas.filler',
     fillerName: 'Filler1',
+    bottledWineQuantity: 10,
+    bottledWineName: 'BottledWine1',
+
     baseNamespace: 'biswas.base',
 
     transformations: {
@@ -36,6 +41,12 @@ const constants = {
         }
     }
 };
+
+// get a random integer between min and max
+// from https://stackoverflow.com/questions/1527803/generating-random-whole-numbers-in-javascript-in-a-specific-range
+function getRandomIntInBounds(min, max) {
+    return Math.random() * (max - min) + min;
+}
 
 async function createAdminIdentity(cardStore, name) {
     // Embedded connection used for local testing
@@ -104,6 +115,7 @@ async function setupParticipants(adminConnection, businessNetworkConnection) {
     vineyard.location = fac.newConcept(constants.growerNamespace, 'Location');
     vineyard.location.latitude = 0.0;
     vineyard.location.longitude = 0.0;
+    vineyard.region = constants.vineyardRegion;
     await utils.addAsset(businessNetworkConnection, constants.growerNamespace, 'Vineyard', vineyard);
 
     const vineyardRelation = fac.newRelationship(constants.growerNamespace, 'Vineyard', vineyard.$identifier);
@@ -156,7 +168,7 @@ async function addGrapes(businessNetworkConnection, owner) {
     grapes.quantity = 100;
     grapes.owner = owner;
     grapes.grapeGrower = fac.newRelationship(constants.growerNamespace, 'GrapeGrower', constants.growerName);
-    grapes.species = 'red';
+    grapes.species = constants.grapesSpecies;
     grapes.harvestDate = new Date(Date.now());
     grapes.vineyard = fac.newRelationship(constants.growerNamespace, 'Vineyard', constants.vineyardName);
     await utils.addAsset(businessNetworkConnection, constants.growerNamespace, 'Grapes', grapes);
@@ -174,6 +186,19 @@ async function addBulkWine(businessNetworkConnection) {
     await utils.addAsset(businessNetworkConnection, constants.producerNamespace, 'BulkWine', bulkwine);
 }
 
+async function addBottledWine(businessNetworkConnection) {
+    let fac = businessNetworkConnection.getBusinessNetwork().getFactory();
+
+    const bottledWine = fac.newResource(constants.fillerNamespace, 'BottledWine', constants.bottledWineName);
+    const fillerRelation = fac.newRelationship(constants.fillerNamespace, 'Filler', constants.fillerName);
+    bottledWine.quantity = constants.bottledWineQuantity;
+    bottledWine.owner = fillerRelation;
+    bottledWine.filler = fillerRelation;
+    bottledWine.alcoholPercentage = getRandomIntInBounds(9, 16);
+    bottledWine.bulkWine = fac.newRelationship(constants.producerNamespace, 'BulkWine', constants.bulkWineName);
+    await utils.addAsset(businessNetworkConnection, constants.fillerNamespace, 'BottledWine', bottledWine);
+}
+
 module.exports = {
     createAdminIdentity,
     deployNetwork,
@@ -181,5 +206,6 @@ module.exports = {
     constants,
     setupParticipants,
     addGrapes,
-    addBulkWine
+    addBulkWine,
+    addBottledWine
 };

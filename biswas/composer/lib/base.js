@@ -24,6 +24,12 @@ function copyBatchProperties(oldBatch, newBatch) {
         });
 }
 
+// get a random integer between min and max
+// from https://stackoverflow.com/questions/1527803/generating-random-whole-numbers-in-javascript-in-a-specific-range
+function getRandomIntInBounds(min, max) {
+    return Math.random() * (max - min) + min;
+}
+
 function assignBatchProperties(oldBatch, newBatch, factory) {
     switch (oldBatch.$type) {
     case 'Grapes':
@@ -34,6 +40,7 @@ function assignBatchProperties(oldBatch, newBatch, factory) {
     case 'BulkWine':
         newBatch.bulkWine = factory.newRelationship('biswas.producer', 'BulkWine', oldBatch.$identifier);
         newBatch.filler = factory.newRelationship('biswas.filler', 'Filler', newBatch.owner.$identifier);
+        newBatch.alcoholPercentage = getRandomIntInBounds(9, 16);
         break;
     }
 }

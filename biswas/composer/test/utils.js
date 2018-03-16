@@ -63,6 +63,7 @@ describe('Utils', () => {
                 vineyard.location = fac.newConcept(growerNamespace, 'Location');
                 vineyard.location.latitude = 0.0;
                 vineyard.location.longitude = 0.0;
+                vineyard.region = 'test';
                 await utils.addAsset(businessNetworkConnection, growerNamespace, assetType, vineyard);
 
                 const vineyardRegistry = await businessNetworkConnection.getAssetRegistry(

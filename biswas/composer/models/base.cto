@@ -1,7 +1,7 @@
 namespace biswas.base
 
-abstract participant Actor identified by companyName {
-  o String companyName
+abstract participant Actor identified by name {
+  o String name
   o String email
 }
 abstract asset Batch identified by batchId {
