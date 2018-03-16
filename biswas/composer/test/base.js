@@ -40,13 +40,9 @@ describe('base', () => {
             const { producer, filler } = await testUtils.setupParticipants(adminConnection, businessNetworkConnection);
             let fac = businessNetworkConnection.getBusinessNetwork().getFactory();
 
-            const grapesOwner = fac.newRelationship(
-                constants.producerNamespace,
-                'WineProducer',
-                constants.producerName
-            );
-            await testUtils.addGrapes(businessNetworkConnection, grapesOwner);
-            await testUtils.addBulkWine(businessNetworkConnection);
+            const owner = fac.newRelationship(constants.producerNamespace, 'WineProducer', constants.producerName);
+            await testUtils.addGrapes(businessNetworkConnection, owner);
+            await testUtils.addBulkWine(businessNetworkConnection, owner);
 
             businessNetworkConnection = await utils.connectParticipant(
                 businessNetworkConnection,
@@ -91,21 +87,17 @@ describe('base', () => {
         let events = [];
 
         beforeEach(async () => {
-            const { producer } = await testUtils.setupParticipants(adminConnection, businessNetworkConnection);
+            const { filler } = await testUtils.setupParticipants(adminConnection, businessNetworkConnection);
             let fac = businessNetworkConnection.getBusinessNetwork().getFactory();
 
-            const grapesOwner = fac.newRelationship(
-                constants.producerNamespace,
-                'WineProducer',
-                constants.producerName
-            );
-            await testUtils.addGrapes(businessNetworkConnection, grapesOwner);
-            await testUtils.addBulkWine(businessNetworkConnection);
+            const owner = fac.newRelationship(constants.fillerNamespace, 'Filler', constants.fillerName);
+            await testUtils.addGrapes(businessNetworkConnection, owner);
+            await testUtils.addBulkWine(businessNetworkConnection, owner);
 
             businessNetworkConnection = await utils.connectParticipant(
                 businessNetworkConnection,
                 cardStore,
-                constants.producerName
+                constants.fillerName
             );
 
             // record emitted events

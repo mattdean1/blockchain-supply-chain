@@ -32,7 +32,7 @@ function labelBottles(tx) {
                 wineBottle.alcoholPercentage = bottledWine.alcoholPercentage;
                 wineBottle.year = bottledWine.bulkWine.year;
 
-                const grapes = bottledWine.bulkWine.grapes;
+                var grapes = bottledWine.bulkWine.grapes;
                 wineBottle.name = grapes.vineyard.region + grapes.species;
                 wineBottles.push(wineBottle);
             }

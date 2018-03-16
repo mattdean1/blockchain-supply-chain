@@ -174,12 +174,12 @@ async function addGrapes(businessNetworkConnection, owner) {
     await utils.addAsset(businessNetworkConnection, constants.growerNamespace, 'Grapes', grapes);
 }
 
-async function addBulkWine(businessNetworkConnection) {
+async function addBulkWine(businessNetworkConnection, owner) {
     let fac = businessNetworkConnection.getBusinessNetwork().getFactory();
 
     const bulkwine = fac.newResource(constants.producerNamespace, 'BulkWine', constants.bulkWineName);
     bulkwine.quantity = constants.bulkWineQuantity;
-    bulkwine.owner = fac.newRelationship(constants.producerNamespace, 'WineProducer', constants.producerName);
+    bulkwine.owner = owner;
     bulkwine.year = 2018;
     bulkwine.grapes = fac.newRelationship(constants.growerNamespace, 'Grapes', constants.grapesName);
     bulkwine.producer = fac.newRelationship(constants.producerNamespace, 'WineProducer', constants.producerName);

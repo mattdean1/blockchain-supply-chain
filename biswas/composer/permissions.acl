@@ -1,0 +1,90 @@
+/* --- GENERAL --- */
+rule AdminAccess {
+     description: "AdminAccess - grant everything"
+     participant: "org.hyperledger.composer.system.NetworkAdmin"
+     operation: ALL
+     resource: "**"
+     action: ALLOW
+}
+
+rule SystemACL {
+  description:  "System ACL to permit all participants access to the network"
+  participant: "org.hyperledger.composer.system.Participant"
+  operation: ALL
+  resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
+}
+
+rule Traceability {
+ 	  description: "Allow participants to view all assets for traceability"
+  	participant: "org.hyperledger.composer.system.Participant"
+  	operation: READ
+    resource: "biswas.**"
+  	action: ALLOW
+}
+
+rule BaseNamespace {
+  description: "Allow participants access to the general namespace"
+  participant: "org.hyperledger.composer.system.Participant"
+  operation: CREATE
+  resource: "biswas.base.*"
+  action: ALLOW
+}
+
+rule UpdateOwnBatches {
+  description: "Allow participants to update assets they own"
+  participant(p): "org.hyperledger.composer.system.Participant"
+  operation: UPDATE
+  resource(r): "biswas.base.Batch"
+  condition: (p.getIdentifier() == r.owner.getIdentifier())
+  action: ALLOW
+}
+
+
+/* --- GROWER --- */
+rule GrowerCreate {
+ 	  description: "Allow GrapeGrowers access to create assets in their namespace"
+  	participant: "biswas.grower.GrapeGrower"
+  	operation: CREATE
+    resource: "biswas.grower.*"
+  	action: ALLOW
+}
+
+rule GrowerUpdateOwnProfile {
+ 	  description: "Allow growers to update their profile"
+  	participant(p): "biswas.grower.GrapeGrower"
+  	operation: UPDATE
+    resource(r): "biswas.grower.GrapeGrower"
+  	condition: (p.getIdentifier() == r.getIdentifier())
+  	action: ALLOW
+}
+
+
+/* --- PRODUCER --- */
+rule ProducerCreateBulkWine {
+  description: "Allow producers to create and update bulk wine"
+  participant: "biswas.producer.WineProducer"
+  operation: CREATE, UPDATE
+  resource: "biswas.producer.BulkWine"
+  action: ALLOW
+}
+
+
+/* --- FILLER --- */
+rule FillerCreate {
+  description: "Allow fillers to create assets in their own namespace"
+  participant: "biswas.filler.Filler"
+  operation: CREATE
+  resource: "biswas.filler.*"
+  action: ALLOW
+}
+
+
+/* --- DISTRIBUTION --- */
+rule RetailerSellBottle {
+  description: "Allow retailers to sell wine bottles"
+  participant: "biswas.distribution.Retailer"
+  operation: CREATE
+  resource: "biswas.distribution.sellBottle"
+  action: ALLOW
+}

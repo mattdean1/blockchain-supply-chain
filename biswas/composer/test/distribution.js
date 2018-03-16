@@ -12,10 +12,10 @@ const utils = require('../src/utils.js');
 const testUtils = require('../src/test-utils.js');
 const constants = testUtils.constants;
 
-describe('Namespace', () => {
+describe('Distribution', () => {
     let adminConnection;
     let businessNetworkConnection;
-    const adminName = 'namespaceAdmin';
+    const adminName = 'distributionAdmin';
     const cardStore = NetworkCardStoreManager.getCardStore({
         type: 'composer-wallet-inmemory'
     });

@@ -68,7 +68,7 @@ function sellBatch(tx) {
 
     var assetNamespace = tx.batch.$namespace;
     var assetName = tx.batch.$type;
-    var fqAssetName = `${assetNamespace}.${assetName}`;
+    var fqAssetName = assetNamespace + '.' + assetName;
     var buyer = tx.buyer;
     var batchRegistry;
 
@@ -110,10 +110,10 @@ function transformBatch(tx) {
 
     var oldBatchNamespace = tx.batch.$namespace;
     var oldBatchName = tx.batch.$type;
-    var oldFQBatchName = `${oldBatchNamespace}.${oldBatchName}`;
+    var oldFQBatchName = oldBatchNamespace + '.' + oldBatchName;
 
     var newBatchDetails = transformations[oldBatchName];
-    var newFQBatchName = `${newBatchDetails.namespace}.${newBatchDetails.name}`;
+    var newFQBatchName = newBatchDetails.namespace + '.' + newBatchDetails.name;
     var newBatch;
 
     return getAssetRegistry(newFQBatchName)

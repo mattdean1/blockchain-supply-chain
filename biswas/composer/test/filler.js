@@ -39,13 +39,9 @@ describe('Filler', () => {
             const { filler } = await testUtils.setupParticipants(adminConnection, businessNetworkConnection);
             let fac = businessNetworkConnection.getBusinessNetwork().getFactory();
 
-            const grapesOwner = fac.newRelationship(
-                constants.producerNamespace,
-                'WineProducer',
-                constants.producerName
-            );
-            await testUtils.addGrapes(businessNetworkConnection, grapesOwner);
-            await testUtils.addBulkWine(businessNetworkConnection);
+            const owner = fac.newRelationship(constants.producerNamespace, 'WineProducer', constants.producerName);
+            await testUtils.addGrapes(businessNetworkConnection, owner);
+            await testUtils.addBulkWine(businessNetworkConnection, owner);
             await testUtils.addBottledWine(businessNetworkConnection);
 
             businessNetworkConnection = await utils.connectParticipant(
