@@ -16,3 +16,8 @@ participant Consumer extends Actor {
 transaction sellBottle {
   --> WineBottle wineBottle
 }
+
+transaction transferBottle {
+  --> WineBottle wineBottle
+  --> Actor newOwner
+}

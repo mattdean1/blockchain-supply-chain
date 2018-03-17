@@ -75,4 +75,58 @@ describe('Distribution', () => {
             bottles[0].quantity.should.equal(0);
         });
     });
+
+    describe('transferBottle()', () => {
+        beforeEach(async () => {
+            const distributor = await utils.addUsableParticipant(
+                adminConnection,
+                businessNetworkConnection,
+                'biswas.distribution',
+                'Distributor',
+                'distributor',
+                {
+                    email: 'string@distributor.com'
+                }
+            );
+
+            const retailer = await utils.addUsableParticipant(
+                adminConnection,
+                businessNetworkConnection,
+                'biswas.distribution',
+                'Retailer',
+                'retailer',
+                {
+                    email: 'string@retailer.com'
+                }
+            );
+
+            let fac = businessNetworkConnection.getBusinessNetwork().getFactory();
+            const bottle = fac.newResource('biswas.filler', 'WineBottle', 'bottle1');
+            bottle.alcoholPercentage = 10;
+            bottle.year = 2018;
+            bottle.name = 'Pinot Grigio';
+            bottle.quantity = 1;
+            bottle.owner = fac.newRelationship('biswas.distribution', 'Distributor', distributor.$identifier);
+            bottle.bottledWine = fac.newRelationship('biswas.filler', 'BottledWine', 'bottledWine1');
+            await utils.addAsset(businessNetworkConnection, 'biswas.filler', 'WineBottle', bottle);
+
+            businessNetworkConnection = await utils.connectParticipant(
+                businessNetworkConnection,
+                cardStore,
+                distributor.$identifier
+            );
+
+            fac = businessNetworkConnection.getBusinessNetwork().getFactory();
+            let tx = fac.newTransaction('biswas.distribution', 'transferBottle');
+            tx.wineBottle = fac.newRelationship(constants.fillerNamespace, 'WineBottle', bottle.$identifier);
+            tx.newOwner = fac.newRelationship('biswas.distribution', 'Retailer', retailer.$identifier);
+            await businessNetworkConnection.submitTransaction(tx);
+        });
+
+        it('should change the owner of the bottle', async () => {
+            const bottleRegistry = await businessNetworkConnection.getAssetRegistry('biswas.filler.WineBottle');
+            const bottles = await bottleRegistry.getAll();
+            bottles[0].owner.$identifier.should.equal('retailer');
+        });
+    });
 });

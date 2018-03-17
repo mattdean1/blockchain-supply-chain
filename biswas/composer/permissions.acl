@@ -88,3 +88,17 @@ rule RetailerSellBottle {
   resource: "biswas.distribution.sellBottle"
   action: ALLOW
 }
+rule DistributorTransferBottle {
+  description: "Allow distributors to sell bottles to retailers"
+  participant: "biswas.distribution.Distributor"
+  operation: CREATE
+  resource: "biswas.distribution.transferBottle"
+  action: ALLOW
+}
+rule FillerTransferBottle {
+  description: "Allow fillers to sell bottles to distributors"
+  participant: "biswas.filler.Filler"
+  operation: CREATE
+  resource: "biswas.distribution.transferBottle"
+  action: ALLOW
+}
