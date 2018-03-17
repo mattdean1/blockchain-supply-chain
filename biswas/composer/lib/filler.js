@@ -33,7 +33,7 @@ function labelBottles(tx) {
                 wineBottle.year = bottledWine.bulkWine.year;
 
                 var grapes = bottledWine.bulkWine.grapes;
-                wineBottle.name = grapes.vineyard.region + grapes.species;
+                wineBottle.name = grapes.vineyard.region + ' ' + grapes.species;
                 wineBottles.push(wineBottle);
             }
             return bottleRegistry.addAll(wineBottles);
