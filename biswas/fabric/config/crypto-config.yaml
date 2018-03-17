@@ -16,3 +16,21 @@ PeerOrgs:
       Count: 2
     Users:
       Count: 1
+  - Name: Filler
+    Domain: filler.biswas.com
+    Template:
+      Count: 2
+    Users:
+      Count: 1
+  - Name: Distributor
+    Domain: distributor.biswas.com
+    Template:
+      Count: 2
+    Users:
+      Count: 1
+  - Name: Retailer
+    Domain: retailer.biswas.com
+    Template:
+      Count: 2
+    Users:
+      Count: 1

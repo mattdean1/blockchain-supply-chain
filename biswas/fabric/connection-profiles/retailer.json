@@ -1,0 +1,138 @@
+{
+  "name": "biswas-retailer",
+  "x-type": "hlfv1",
+  "x-commitTimeout": 300,
+  "version": "1.0.0",
+
+  "client": {
+    "organization": "Retailer",
+    "connection": {
+      "timeout": {
+        "peer": {
+          "endorser": "300",
+          "eventHub": "300",
+          "eventReg": "300"
+        },
+        "orderer": "300"
+      }
+    }
+  },
+
+  "orderers": {
+    "orderer.biswas.com": {
+      "url": "grpc://localhost:7050"
+    }
+  },
+
+  "channels": {
+    "channel1": {
+      "orderers": ["orderer.biswas.com"],
+      "peers": {
+        "peer0.grower.biswas.com": {},
+        "peer1.grower.biswas.com": {},
+        "peer0.producer.biswas.com": {},
+        "peer1.producer.biswas.com": {},
+        "peer0.filler.biswas.com": {},
+        "peer1.filler.biswas.com": {},
+        "peer0.distributor.biswas.com": {},
+        "peer1.distributor.biswas.com": {},
+        "peer0.retailer.biswas.com": {},
+        "peer1.retailer.biswas.com": {}
+      }
+    }
+  },
+
+  "organizations": {
+    "Grower": {
+      "mspid": "GrowerMSP",
+      "peers": ["peer0.grower.biswas.com", "peer1.grower.biswas.com"],
+      "certificateAuthorities": ["ca.grower.biswas.com"]
+    },
+    "Producer": {
+      "mspid": "ProducerMSP",
+      "peers": ["peer0.producer.biswas.com", "peer1.producer.biswas.com"],
+      "certificateAuthorities": ["ca.producer.biswas.com"]
+    },
+    "Filler": {
+      "mspid": "FillerMSP",
+      "peers": ["peer0.filler.biswas.com", "peer1.filler.biswas.com"],
+      "certificateAuthorities": ["ca.filler.biswas.com"]
+    },
+    "Distributor": {
+      "mspid": "DistributorMSP",
+      "peers": ["peer0.distributor.biswas.com", "peer1.distributor.biswas.com"],
+      "certificateAuthorities": ["ca.distributor.biswas.com"]
+    },
+    "Retailer": {
+      "mspid": "RetailerMSP",
+      "peers": ["peer0.retailer.biswas.com", "peer1.retailer.biswas.com"],
+      "certificateAuthorities": ["ca.retailer.biswas.com"]
+    }
+  },
+
+  "peers": {
+    "peer0.grower.biswas.com": {
+      "url": "grpc://localhost:7051",
+      "eventUrl": "grpc://localhost:7053"
+    },
+    "peer1.grower.biswas.com": {
+      "url": "grpc://localhost:8051",
+      "eventUrl": "grpc://localhost:8053"
+    },
+    "peer0.producer.biswas.com": {
+      "url": "grpc://localhost:9051",
+      "eventUrl": "grpc://localhost:9053"
+    },
+    "peer1.producer.biswas.com": {
+      "url": "grpc://localhost:10051",
+      "eventUrl": "grpc://localhost:10053"
+    },
+    "peer0.filler.biswas.com": {
+      "url": "grpc://localhost:11051",
+      "eventUrl": "grpc://localhost:11053"
+    },
+    "peer1.filler.biswas.com": {
+      "url": "grpc://localhost:12051",
+      "eventUrl": "grpc://localhost:12053"
+    },
+    "peer0.distributor.biswas.com": {
+      "url": "grpc://localhost:13051",
+      "eventUrl": "grpc://localhost:13053"
+    },
+    "peer1.distributor.biswas.com": {
+      "url": "grpc://localhost:14051",
+      "eventUrl": "grpc://localhost:14053"
+    },
+    "peer0.retailer.biswas.com": {
+      "url": "grpc://localhost:15051",
+      "eventUrl": "grpc://localhost:15053"
+    },
+    "peer1.retailer.biswas.com": {
+      "url": "grpc://localhost:16051",
+      "eventUrl": "grpc://localhost:16053"
+    }
+  },
+
+  "certificateAuthorities": {
+    "ca.grower.biswas.com": {
+      "url": "http://localhost:7054",
+      "caName": "ca-grower"
+    },
+    "ca.producer.biswas.com": {
+      "url": "http://localhost:8054",
+      "caName": "ca-producer"
+    },
+    "ca.filler.biswas.com": {
+      "url": "http://localhost:9054",
+      "caName": "ca-filler"
+    },
+    "ca.distributor.biswas.com": {
+      "url": "http://localhost:10054",
+      "caName": "ca-distributor"
+    },
+    "ca.retailer.biswas.com": {
+      "url": "http://localhost:11054",
+      "caName": "ca-retailer"
+    }
+  }
+}

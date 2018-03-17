@@ -1,0 +1,73 @@
+version: '2'
+
+services:
+  ca:
+    container_name: ca.filler.biswas.com
+    extends:
+      file: base.yaml
+      service: ca-base
+    environment:
+      - FABRIC_CA_SERVER_CA_NAME=ca-filler
+    ports:
+      - "9054:7054"
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/ca.filler.biswas.com-cert.pem --ca.keyfile /etc/hyperledger/3716cfca559766722a6daeabc08f2f2c273e134ee60a7fc3ced42df408d9a3b3_sk -b admin:adminpw -d'
+    volumes:
+      - ../artifacts/certs/peerOrganizations/filler.biswas.com/ca:/etc/hyperledger
+
+
+  peer0-db:
+    container_name: peer0-db.filler.biswas.com
+    image: hyperledger/fabric-couchdb
+    environment:
+      - COUCHDB_USER=fillerpeer0admin
+      - COUCHDB_PASSWORD=pass
+
+  peer1-db:
+    container_name: peer1-db.filler.biswas.com
+    image: hyperledger/fabric-couchdb
+    environment:
+      - COUCHDB_USER=fillerpeer1admin
+      - COUCHDB_PASSWORD=pass
+
+
+  peer0:
+    container_name: peer0.filler.biswas.com
+    extends:
+      file: base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.filler.biswas.com
+      - CORE_PEER_ADDRESS=peer0.filler.biswas.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.filler.biswas.com:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.filler.biswas.com:7051
+      - CORE_PEER_LOCALMSPID=FillerMSP
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=peer0-db.filler.biswas.com:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=fillerpeer0admin
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=pass
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../artifacts/certs/peerOrganizations/filler.biswas.com/peers/peer0.filler.biswas.com/msp:/etc/hyperledger/fabric/msp
+    ports:
+      - 11051:7051
+      - 11053:7053
+
+  peer1:
+    container_name: peer1.filler.biswas.com
+    extends:
+      file: base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer1.filler.biswas.com
+      - CORE_PEER_ADDRESS=peer1.filler.biswas.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.filler.biswas.com:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.filler.biswas.com:7051
+      - CORE_PEER_LOCALMSPID=FillerMSP
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=peer1-db.filler.biswas.com:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=fillerpeer1admin
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=pass
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../artifacts/certs/peerOrganizations/filler.biswas.com/peers/peer1.filler.biswas.com/msp:/etc/hyperledger/fabric/msp
+    ports:
+      - 12051:7051
+      - 12053:7053

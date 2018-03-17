@@ -1,0 +1,73 @@
+version: '2'
+
+services:
+  ca:
+    container_name: ca.retailer.biswas.com
+    extends:
+      file: base.yaml
+      service: ca-base
+    environment:
+      - FABRIC_CA_SERVER_CA_NAME=ca-retailer
+    ports:
+      - "11054:7054"
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/ca.retailer.biswas.com-cert.pem --ca.keyfile /etc/hyperledger/1a2eb8796adf5f5dfcd8b50844c494318565beb24036902467508305185103ee_sk -b admin:adminpw -d'
+    volumes:
+      - ../artifacts/certs/peerOrganizations/retailer.biswas.com/ca:/etc/hyperledger
+
+
+  peer0-db:
+    container_name: peer0-db.retailer.biswas.com
+    image: hyperledger/fabric-couchdb
+    environment:
+      - COUCHDB_USER=retailerpeer0admin
+      - COUCHDB_PASSWORD=pass
+
+  peer1-db:
+    container_name: peer1-db.retailer.biswas.com
+    image: hyperledger/fabric-couchdb
+    environment:
+      - COUCHDB_USER=retailerpeer1admin
+      - COUCHDB_PASSWORD=pass
+
+
+  peer0:
+    container_name: peer0.retailer.biswas.com
+    extends:
+      file: base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.retailer.biswas.com
+      - CORE_PEER_ADDRESS=peer0.retailer.biswas.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.retailer.biswas.com:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.retailer.biswas.com:7051
+      - CORE_PEER_LOCALMSPID=RetailerMSP
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=peer0-db.retailer.biswas.com:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=retailerpeer0admin
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=pass
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../artifacts/certs/peerOrganizations/retailer.biswas.com/peers/peer0.retailer.biswas.com/msp:/etc/hyperledger/fabric/msp
+    ports:
+      - 15051:7051
+      - 15053:7053
+
+  peer1:
+    container_name: peer1.retailer.biswas.com
+    extends:
+      file: base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer1.retailer.biswas.com
+      - CORE_PEER_ADDRESS=peer1.retailer.biswas.com:7051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.retailer.biswas.com:7051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.retailer.biswas.com:7051
+      - CORE_PEER_LOCALMSPID=RetailerMSP
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=peer1-db.retailer.biswas.com:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=retailerpeer1admin
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=pass
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../artifacts/certs/peerOrganizations/retailer.biswas.com/peers/peer1.retailer.biswas.com/msp:/etc/hyperledger/fabric/msp
+    ports:
+      - 16051:7051
+      - 16053:7053

@@ -57,7 +57,7 @@ export COMPOSER_PROVIDERS='{
   }
 }'
 
-composer-rest-server -c grower-network-admin@biswas -n always -w true -a true -m true
+composer-rest-server -c grower-network-admin@biswas -a true -m true
 ```
 
 In this mode you can actually start the rest server with an identity with minimal permissions.
@@ -124,6 +124,12 @@ configtxgen -profile ChannelCreation -outputCreateChannelTx ./artifacts/channel/
 configtxgen -profile ChannelCreation -outputAnchorPeersUpdate ./artifacts/channel/GrowerMSPanchors.tx -channelID $CHANNEL_NAME -asOrg GrowerMSP
 
 configtxgen -profile ChannelCreation -outputAnchorPeersUpdate ./artifacts/channel/ProducerMSPanchors.tx -channelID $CHANNEL_NAME -asOrg ProducerMSP
+
+configtxgen -profile ChannelCreation -outputAnchorPeersUpdate ./artifacts/channel/FillerMSPanchors.tx -channelID $CHANNEL_NAME -asOrg FillerMSP
+
+configtxgen -profile ChannelCreation -outputAnchorPeersUpdate ./artifacts/channel/DistributorMSPanchors.tx -channelID $CHANNEL_NAME -asOrg DistributorMSP
+
+configtxgen -profile ChannelCreation -outputAnchorPeersUpdate ./artifacts/channel/RetailerMSPanchors.tx -channelID $CHANNEL_NAME -asOrg RetailerMSP
 ```
 
 ## Start the network
@@ -165,10 +171,11 @@ composer card create\
  -u PeerAdmin\
  -r PeerAdmin -r ChannelAdmin\
  -f ./id-cards/PeerAdmin@biswas-grower.card\
- -k ./artifacts/certs/peerOrganizations/grower.biswas.com/users/Admin@grower.biswas.com/msp/keystore/8ef3b6e18b7aa0065d4447bd0032a3b2023a659fd1bfb13358c4d7f7cafb39c6_sk\
+ -k ./artifacts/certs/peerOrganizations/grower.biswas.com/users/Admin@grower.biswas.com/msp/keystore/8506c008840a74878609f82716d133796aa84a11a7c609d508aa15a4e05fe996_sk\
  -c ./artifacts/certs/peerOrganizations/grower.biswas.com/users/Admin@grower.biswas.com/msp/signcerts/Admin@grower.biswas.com-cert.pem
 
 composer card import -f ./id-cards/PeerAdmin@biswas-grower.card
+
 
 composer card create\
  -p connection-profiles/producer.json\
@@ -240,7 +247,7 @@ rm -rf fabric/artifacts fabric/id-cards
 composer card delete -n [cardname]
 
 # If you have already upgraded the composer cli
-rm -fr $HOME/.composer
+rm -rf $HOME/.composer
 ```
 
 #### Upgrade globally installed composer packages
@@ -269,10 +276,8 @@ Docker files already use the image tagged with `latest`.
 
 Running `cryptogen` again will generate different names for some key files, so change the name in:
 
-* The `--ca-keyfile` option in the certificate authority definition
+* The `--ca-keyfile` option in the certificate authority docker definition
 * `remakeIdentities.sh`
 * The "Create business network cards for fabric admins" section of this document.
 
-#### Fabric samples
 
-When d

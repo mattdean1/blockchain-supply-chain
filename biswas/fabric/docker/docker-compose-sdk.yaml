@@ -1,8 +1,3 @@
-# Copyright IBM Corp. All Rights Reserved.
-#
-# SPDX-License-Identifier: Apache-2.0
-#
-
 version: '2'
 
 networks:
@@ -16,6 +11,7 @@ services:
     networks:
       - biswas
 
+  ### Grower ###
   ca.grower.biswas.com:
     extends:
       file:  grower.yaml
@@ -55,7 +51,7 @@ services:
     depends_on:
       - peer1-db.grower.biswas.com
 
-
+  ### Producer ###
   ca.producer.biswas.com:
     extends:
       file:  producer.yaml
@@ -95,6 +91,126 @@ services:
     depends_on:
       - peer1-db.producer.biswas.com
 
+  ### Filler ###
+  ca.filler.biswas.com:
+    extends:
+      file: filler.yaml
+      service: ca
+    networks:
+      - biswas
+
+  peer0-db.filler.biswas.com:
+    extends:
+      file: filler.yaml
+      service: peer0-db
+    networks:
+      - biswas
+
+  peer1-db.filler.biswas.com:
+    extends:
+      file: filler.yaml
+      service: peer1-db
+    networks:
+      - biswas
+
+  peer0.filler.biswas.com:
+    extends:
+      file: filler.yaml
+      service: peer0
+    networks:
+      - biswas
+    depends_on:
+      - peer0-db.filler.biswas.com
+
+  peer1.filler.biswas.com:
+    extends:
+      file: filler.yaml
+      service: peer1
+    networks:
+      - biswas
+    depends_on:
+      - peer1-db.filler.biswas.com
+
+  ### Distributor ###
+  ca.distributor.biswas.com:
+    extends:
+      file: distributor.yaml
+      service: ca
+    networks:
+      - biswas
+
+  peer0-db.distributor.biswas.com:
+    extends:
+      file: distributor.yaml
+      service: peer0-db
+    networks:
+      - biswas
+
+  peer1-db.distributor.biswas.com:
+    extends:
+      file: distributor.yaml
+      service: peer1-db
+    networks:
+      - biswas
+
+  peer0.distributor.biswas.com:
+    extends:
+      file: distributor.yaml
+      service: peer0
+    networks:
+      - biswas
+    depends_on:
+      - peer0-db.distributor.biswas.com
+
+  peer1.distributor.biswas.com:
+    extends:
+      file: distributor.yaml
+      service: peer1
+    networks:
+      - biswas
+    depends_on:
+      - peer1-db.distributor.biswas.com
+
+  ### Retailer ###
+  ca.retailer.biswas.com:
+    extends:
+      file: retailer.yaml
+      service: ca
+    networks:
+      - biswas
+
+  peer0-db.retailer.biswas.com:
+    extends:
+      file: retailer.yaml
+      service: peer0-db
+    networks:
+      - biswas
+
+  peer1-db.retailer.biswas.com:
+    extends:
+      file: retailer.yaml
+      service: peer1-db
+    networks:
+      - biswas
+
+  peer0.retailer.biswas.com:
+    extends:
+      file: retailer.yaml
+      service: peer0
+    networks:
+      - biswas
+    depends_on:
+      - peer0-db.retailer.biswas.com
+
+  peer1.retailer.biswas.com:
+    extends:
+      file: retailer.yaml
+      service: peer1
+    networks:
+      - biswas
+    depends_on:
+      - peer1-db.retailer.biswas.com
+
 
   cli:
     container_name: cli
@@ -121,5 +237,14 @@ services:
       - ca.producer.biswas.com
       - peer0.producer.biswas.com
       - peer1.producer.biswas.com
+      - ca.filler.biswas.com
+      - peer0.filler.biswas.com
+      - peer1.filler.biswas.com
+      - ca.distributor.biswas.com
+      - peer0.distributor.biswas.com
+      - peer1.distributor.biswas.com
+      - ca.retailer.biswas.com
+      - peer0.retailer.biswas.com
+      - peer1.retailer.biswas.com
     networks:
       - biswas

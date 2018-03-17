@@ -10,7 +10,7 @@ services:
       - FABRIC_CA_SERVER_CA_NAME=ca-grower
     ports:
       - "7054:7054"
-    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/ca.grower.biswas.com-cert.pem --ca.keyfile /etc/hyperledger/28b5665c29645f5ff63627fef9eb2af32655870938749efbcb2e96fe2862300d_sk -b admin:adminpw -d'
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/ca.grower.biswas.com-cert.pem --ca.keyfile /etc/hyperledger/8506c008840a74878609f82716d133796aa84a11a7c609d508aa15a4e05fe996_sk -b admin:adminpw -d'
     volumes:
       - ../artifacts/certs/peerOrganizations/grower.biswas.com/ca:/etc/hyperledger
 

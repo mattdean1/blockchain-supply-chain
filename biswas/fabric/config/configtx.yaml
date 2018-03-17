@@ -12,8 +12,11 @@ Profiles:
         Consortiums:
             SampleConsortium:
                 Organizations:
-                    - *Grower
-                    - *Producer
+                - *Grower
+                - *Producer
+                - *Filler
+                - *Distributor
+                - *Retailer
 
     ChannelCreation:
         Consortium: SampleConsortium
@@ -22,6 +25,9 @@ Profiles:
             Organizations:
                 - *Grower
                 - *Producer
+                - *Filler
+                - *Distributor
+                - *Retailer
             Capabilities:
               <<: *ApplicationCapabilities
 
@@ -46,8 +52,31 @@ Organizations:
         MSPDir: ../artifacts/certs/peerOrganizations/producer.biswas.com/msp
         AnchorPeers:
             - Host: peer0.producer.biswas.com
-              Port: 7051
+              Port: 9051
 
+    - &Filler
+        Name: FillerMSP
+        ID: FillerMSP
+        MSPDir: ../artifacts/certs/peerOrganizations/filler.biswas.com/msp
+        AnchorPeers:
+            - Host: peer0.filler.biswas.com
+              Port: 11051
+
+    - &Distributor
+        Name: DistributorMSP
+        ID: DistributorMSP
+        MSPDir: ../artifacts/certs/peerOrganizations/distributor.biswas.com/msp
+        AnchorPeers:
+            - Host: peer0.distributor.biswas.com
+              Port: 13051
+
+    - &Retailer
+        Name: RetailerMSP
+        ID: RetailerMSP
+        MSPDir: ../artifacts/certs/peerOrganizations/retailer.biswas.com/msp
+        AnchorPeers:
+            - Host: peer0.retailer.biswas.com
+              Port: 15051
 
 Orderer: &OrdererDefaults
     # Available types are "solo" and "kafka"
