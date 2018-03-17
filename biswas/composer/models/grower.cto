@@ -5,7 +5,7 @@ import biswas.base.Actor
 import biswas.producer.WineProducer
 
 participant GrapeGrower extends Actor {
-  --> Vineyard[] vineyards
+  --> Vineyard[] vineyards optional
 }
 
 asset Grapes extends Batch {
