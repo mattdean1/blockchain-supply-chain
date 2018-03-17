@@ -19,6 +19,13 @@ query historianQuery{
           WHERE ((transactionType == 'biswas.base.transformBatch') AND (participantInvoking == _$producerParam))
 }
 
+query previousOwners{
+  description: "Find all the previous owners of a wine bottle"
+  statement:
+    SELECT org.hyperledger.composer.system.HistorianRecord
+      WHERE (transactionType == 'biswas.distribution.transferBottle')
+}
+
 query getBatches{
   description: "Get all the batches owned by a participant"
   statement:
