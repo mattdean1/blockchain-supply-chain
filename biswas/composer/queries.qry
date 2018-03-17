@@ -18,3 +18,10 @@ query historianQuery{
       SELECT org.hyperledger.composer.system.HistorianRecord
           WHERE ((transactionType == 'biswas.base.transformBatch') AND (participantInvoking == _$producerParam))
 }
+
+query getBatches{
+  description: "Get all the batches owned by a participant"
+  statement:
+    SELECT biswas.base.Batch
+      WHERE (owner == _$participantID)
+}
