@@ -5,11 +5,11 @@ import {
   getOrigins
 } from './controllers/trace';
 
-import { Grid, Header, Input, Button, Message } from 'semantic-ui-react';
+import { Grid, Header } from 'semantic-ui-react';
 import BottleInfo from './components/BottleInfo';
 import Timeline from './components/Timeline';
 import Vineyard from './components/Vineyard';
-import NotFoundMessage from './components/search/NotFoundMessage';
+import { SearchInput, NotFoundMessage } from './components/search';
 
 import 'semantic-ui-css/semantic.min.css';
 import './App.css';
@@ -33,12 +33,12 @@ class App extends Component {
 
   handleClick = async () => {
     const searchTerm = this.state.searchText;
-    if (searchTerm === '') {
-      return false;
-    }
+    // if (searchTerm === '') {
+    //   return false;
+    // }
 
     this.setState({ loading: true, couldNotFind: false });
-    const bottleId = this.state.searchText; //'WINEBOTTLE_01521303744927';
+    const bottleId = 'WINEBOTTLE_01521303744927'; //this.state.searchText;
     const bottleData = await getBottleData(bottleId);
     if (bottleData) {
       const ownershipHistory = await getOwnershipHistory(bottleId);
@@ -66,19 +66,10 @@ class App extends Component {
               </Header>
             </Grid.Row>
             <Grid.Row>
-              <Input
-                placeholder="Search here"
+              <SearchInput
                 onChange={this.handleChange}
-                action={{
-                  color: 'blue',
-                  content: 'Search',
-                  size: 'big',
-                  onClick: this.handleClick
-                }}
-                icon="search"
-                iconPosition="left"
+                onClick={this.handleClick}
                 loading={this.state.loading}
-                style={{ fontSize: '18px', minWidth: '45%' }}
               />
             </Grid.Row>
             <Grid.Row>

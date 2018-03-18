@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 
-import { Segment, Accordion, Icon, Header, Grid } from 'semantic-ui-react';
+import { Accordion, Icon, Header, Grid } from 'semantic-ui-react';
+import Map from './Map';
 
-import { parseId, parseDate } from '../controllers/api';
+import { parseId } from '../controllers/api';
 
 class Vineyard extends Component {
   state = { open: true };
@@ -47,6 +47,12 @@ class Vineyard extends Component {
                 <Grid.Row>{data.grapesData.species}</Grid.Row>
               </Grid.Column>
             </Grid>
+            <Map
+              location={[
+                data.vineyard.location.latitude,
+                data.vineyard.location.longitude
+              ]}
+            />
           </Accordion.Content>
         </Accordion>
       </div>

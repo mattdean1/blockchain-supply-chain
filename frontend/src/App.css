@@ -2,3 +2,8 @@
   width: 100vw;
   height: 100vh;
 }
+.leaflet-container {
+  height: 250px;
+  width: 300px;
+  margin: 30px auto 0 auto;
+}
