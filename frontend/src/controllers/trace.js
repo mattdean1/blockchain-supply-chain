@@ -14,10 +14,8 @@ export const getOwnershipHistory = async bottleId => {
         '"}}'
     )}`
   );
-  const earliestTx = transferBottle[transferBottle.length - 1].transactionId;
-  const prevOwner = await getAPI(`/system/historian/${earliestTx}`);
 
-  return [transferBottle, prevOwner];
+  return transferBottle;
 };
 
 export const getOrigins = async bottleData => {
@@ -25,14 +23,28 @@ export const getOrigins = async bottleData => {
   const bottledWineData = await getAPI(
     `/biswas.filler.BottledWine/${bottledWineId}`
   );
+  const bulkToBottled = await getAPI(
+    `/biswas.base.transformBatch`,
+    `{"where": {"batch": "${bottledWineData.bulkWine}"}}`
+  );
 
   const bulkWineId = parseId(bottledWineData.bulkWine);
   const bulkWineData = await getAPI(`/biswas.producer.BulkWine/${bulkWineId}`);
+  const grapesToBulk = await getAPI(
+    `/biswas.base.transformBatch`,
+    `{"where": {"batch": "${bulkWineData.grapes}"}}`
+  );
 
   const grapesId = parseId(bulkWineData.grapes);
   const grapesData = await getAPI(`/biswas.grower.Grapes/${grapesId}`);
 
-  return [bottledWineData, bulkWineData, grapesData];
+  return {
+    bottledWineData,
+    bulkToBottled: bulkToBottled[0],
+    bulkWineData,
+    grapesToBulk: grapesToBulk[0],
+    grapesData
+  };
 };
 
 export const trace = async bottleId => {

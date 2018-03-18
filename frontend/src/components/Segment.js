@@ -7,10 +7,12 @@ const Segment = props => {
   const { header, children } = props;
 
   return (
-    <SUSegment color="blue">
-      <Header as="h2"> {header} </Header>
-      {children}
-    </SUSegment>
+    <div>
+      <SUSegment color="blue" style={{ margin: '20px auto' }}>
+        <Header as="h2"> {header} </Header>
+        {children}
+      </SUSegment>
+    </div>
   );
 };
 

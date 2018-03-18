@@ -64,9 +64,15 @@ class App extends Component {
                 style={{ fontSize: '1.5rem', width: '45%' }}
               />
             </Grid.Row>
-            <Grid.Row>
-              <BottleInfo data={state.bottleData} />
-              <OwnershipHistory history={state.ownershipHistory} />
+            <Grid.Row style={{ width: '50%', margin: '0 auto' }}>
+              <BottleInfo
+                data={state.bottleData}
+                style={{ margin: '10px auto' }}
+              />
+              <OwnershipHistory
+                history={state.ownershipHistory}
+                style={{ margin: '10px auto' }}
+              />
               <Origins data={state.origins} />
             </Grid.Row>
           </Grid.Column>
