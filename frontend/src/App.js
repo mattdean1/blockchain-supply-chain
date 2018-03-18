@@ -33,12 +33,12 @@ class App extends Component {
 
   handleClick = async () => {
     const searchTerm = this.state.searchText;
-    // if (searchTerm === '') {
-    //   return false;
-    // }
+    if (searchTerm === '') {
+      return false;
+    }
 
     this.setState({ loading: true, couldNotFind: false });
-    const bottleId = 'WINEBOTTLE_01521303744927'; //this.state.searchText;
+    const bottleId = searchTerm; // 'WINEBOTTLE_01521303744927';
     const bottleData = await getBottleData(bottleId);
     if (bottleData) {
       const ownershipHistory = await getOwnershipHistory(bottleId);
@@ -77,20 +77,22 @@ class App extends Component {
             </Grid.Row>
             <Grid.Row>
               <Grid
-                columns={4}
+                columns={8}
                 stackable
                 reversed="mobile"
                 style={{ marginTop: '30px' }}
               >
-                <Grid.Column />
-                <Grid.Column>
+                <Grid.Column width={2} />
+
+                <Grid.Column width={5}>
                   <Timeline
                     history={state.ownershipHistory}
                     origins={state.origins}
                     style={{ margin: '10px auto' }}
                   />
                 </Grid.Column>
-                <Grid.Column>
+                <Grid.Column width={1} />
+                <Grid.Column width={7}>
                   <BottleInfo
                     data={state.bottleData}
                     style={{ margin: '10px auto' }}
@@ -98,7 +100,7 @@ class App extends Component {
                   <div />
                   <Vineyard data={state.origins} />
                 </Grid.Column>
-                <Grid.Column />
+                <Grid.Column width={1} />
               </Grid>
             </Grid.Row>
           </Grid.Column>

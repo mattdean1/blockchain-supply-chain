@@ -27,7 +27,7 @@ class Vineyard extends Component {
           >
             <Header as="h1">
               <Icon name="dropdown" />
-              Grown at {parseId(data.grapesData.vineyard)}
+              Grapes grown at {parseId(data.grapesData.vineyard)}
             </Header>
           </Accordion.Title>
           <Accordion.Content

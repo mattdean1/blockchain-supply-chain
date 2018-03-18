@@ -10,7 +10,7 @@ const Timeline = props => {
 
   return (
     <div>
-      <Step.Group fluid vertical>
+      <Step.Group fluid vertical style={{ textAlign: 'center' }}>
         <Step>
           <Icon name="dollar" />
           <Step.Content>
