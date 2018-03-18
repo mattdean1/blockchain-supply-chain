@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Segment from './Segment';
+import { Header, Segment, Grid } from 'semantic-ui-react';
 
 const BottleInfo = props => {
   const { data } = props;
@@ -9,10 +9,21 @@ const BottleInfo = props => {
 
   return (
     <div>
-      <Segment header="Bottle Information">
-        <p>Name: {data.name}</p>
-        <p>Year: {data.year}</p>
-        <p>Alcohol: {data.alcoholPercentage}%</p>
+      <Header as="h1">
+        {data.year} {data.name}
+      </Header>
+      <Segment basic style={{ textAlign: 'left' }}>
+        <Grid columns={3} style={{ fontSize: '1.1rem' }}>
+          <Grid.Column />
+          <Grid.Column>
+            <Grid.Row>Strength: </Grid.Row>
+            <Grid.Row>Additives: </Grid.Row>
+          </Grid.Column>
+          <Grid.Column>
+            <Grid.Row>{data.alcoholPercentage}%</Grid.Row>
+            <Grid.Row>None</Grid.Row>
+          </Grid.Column>
+        </Grid>
       </Segment>
     </div>
   );

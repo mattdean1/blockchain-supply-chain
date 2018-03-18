@@ -2,20 +2,26 @@ import { getAPI, parseId } from './api.js';
 
 export const getBottleData = async bottleId => {
   const bottleData = await getAPI(`/biswas.filler.WineBottle/${bottleId}`);
-  return bottleData;
+  return bottleData.error && bottleData.error.status === 404
+    ? false
+    : bottleData;
 };
 
 export const getOwnershipHistory = async bottleId => {
+  const fqBottleId = `resource:biswas.filler.WineBottle#${bottleId}`;
   // get previous owners
   const transferBottle = await getAPI(
-    `/biswas.distribution.transferBottle?filter=${encodeURIComponent(
-      '{"where": {"wineBottle": "resource:biswas.filler.WineBottle#' +
-        bottleId +
-        '"}}'
-    )}`
+    `/biswas.distribution.transferBottle`,
+    `{"where": {"wineBottle": "${fqBottleId}"}}`
   );
 
-  return transferBottle;
+  // get sale to consumer
+  const sellBottle = await getAPI(
+    `/biswas.distribution.sellBottle`,
+    `{"where": {"wineBottle": "${fqBottleId}"}}`
+  );
+
+  return [transferBottle, sellBottle[0]];
 };
 
 export const getOrigins = async bottleData => {
@@ -37,13 +43,17 @@ export const getOrigins = async bottleData => {
 
   const grapesId = parseId(bulkWineData.grapes);
   const grapesData = await getAPI(`/biswas.grower.Grapes/${grapesId}`);
+  const vineyard = await getAPI(
+    `/biswas.grower.Vineyard/${parseId(grapesData.vineyard)}`
+  );
 
   return {
     bottledWineData,
     bulkToBottled: bulkToBottled[0],
     bulkWineData,
     grapesToBulk: grapesToBulk[0],
-    grapesData
+    grapesData,
+    vineyard
   };
 };
 
