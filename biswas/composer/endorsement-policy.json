@@ -3,13 +3,13 @@
         {
             "role": {
                 "name": "member",
-                "mspId": "Org1MSP"
+                "mspId": "DistributorMSP"
             }
         },
         {
             "role": {
                 "name": "member",
-                "mspId": "Org2MSP"
+                "mspId": "RetailerMSP"
             }
         }
     ],
