@@ -24,7 +24,7 @@ npm i -g composer-cli@0.16.3 composer-rest-server@0.16.3 passport-github
 ## Import sample participant identities
 
 ```
-cd biswas
+cd network
 ./importIdCards.sh
 ```
 
@@ -42,7 +42,7 @@ cd biswas
 ## Start the network
 
 ```
-# in 'biswas' directory
+# in 'network' directory
 export COMPOSE_PROJECT_NAME=biswas
 ./deployNetwork.sh
 ```
@@ -81,8 +81,8 @@ yarn start
 
 * Navigate to http://localhost:3000/auth/github and authenticate with GitHub
 * Find the `/wallet/import` endpoint at the bottom of the list in the API explorer
-* Import the admin identity card from `./biswas/fabric/id-cards/grower-network-admin/card` using the name `admin`
-* Import the identity cards for the sample network participants from `./biswas/fabric/id-cards/users` using the same endpoint. The names should be the same as the name of the card, i.e. the file `distributor.card` should be imported as `distributor`
+* Import the admin identity card from `./network/fabric/id-cards/grower-network-admin/card` using the name `admin`
+* Import the identity cards for the sample network participants from `./network/fabric/id-cards/users` using the same endpoint. The names should be the same as the name of the card, i.e. the file `distributor.card` should be imported as `distributor`
 
 ## Add sample data using Postman
 
