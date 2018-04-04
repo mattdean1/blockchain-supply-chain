@@ -6,8 +6,7 @@ export const getAPI = async (url, filter) => {
 
   const response = await fetch('/api' + reqURL, {
     headers: {
-      'X-Access-Token':
-        'KzC4UDpipR5r7rQFYwHlt0ET0KNXVMGVGOhFquWQR9Oc736H9fTBEz56fqpGKKeF'
+      'X-Access-Token': 'REPLACE_WITH_ACCESS_TOKEN'
     }
   });
   return response.json();
