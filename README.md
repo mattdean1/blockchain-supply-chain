@@ -68,13 +68,6 @@ composer-rest-server -c grower-network-admin@biswas -a true -m true
 
 The API explorer is now located http://localhost:3000/explorer.
 
-## Start the web application
-
-```
-# in the 'frontend' directory
-yarn start
-```
-
 # Interacting with the network
 
 ## Import identities into API server
@@ -98,3 +91,14 @@ yarn start
 * Copy the value of `bottleID` from the Postman environment
 * Navigate to the frontend at http://localhost:3001/
 * Search for the copied bottleID.
+
+<img src="docs/frontend.png" width="600">
+
+# Development
+
+## Unit tests
+
+```
+# in ./network/composer
+npm t
+```
