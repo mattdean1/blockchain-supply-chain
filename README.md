@@ -1,3 +1,16 @@
+# blockchain-supply-chain
+
+A technical framework for improving traceability in supply chain systems using blockchain. Developed as part of my final year project at University. See [dissertation.pdf](/dissertation.pdf) for further discussion.
+
+> Improving Supply chain systems offers benefits to quality, cost, and regulatory compliance, but
+interoperability between organisations is an obstacle. This project addresses the issue of interoperability through the introduction of blockchain technology, implementing a complex supply chain model from literature on the Hyperledger platform.
+
+>The process of translating a supply chain network model to an implementation is described in
+detail; coupled with the the complexity of the network model chosen, this allows the system to
+be generalised well to a variety of supply chain use cases. The system includes infrastructure,
+application and integration layers, providing an end-to-end reference implementation for creation
+of supply chain systems in enterprise.
+
 # Prequisites
 
 * Docker
